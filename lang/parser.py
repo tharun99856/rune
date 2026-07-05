@@ -1,11 +1,16 @@
 from lang.lexer import tokenize_program
-from lang.model import Take, TransformationGraph
+from lang.model import Order, Take, TransformationGraph
 
 
 def _parse_line(tokens):
     head = tokens[0]
     if head.value == "TAKE":
         return Take(count=int(tokens[1].value))
+    if head.value == "ORDER":
+        # tokens: ORDER BY <key> [ASC|DESC]
+        key = tokens[2].value
+        descending = len(tokens) > 3 and tokens[3].value == "DESC"
+        return Order(key=key, descending=descending)
     raise ValueError(f"unrecognized step starting with {head.value!r}")
 
 

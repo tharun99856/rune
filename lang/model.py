@@ -7,7 +7,13 @@ class Take:
     count: int
 
 
-Step = Union[Take]
+@dataclass(frozen=True)
+class Order:
+    key: str
+    descending: bool = False
+
+
+Step = Union[Take, Order]
 
 
 @dataclass(frozen=True)
