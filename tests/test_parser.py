@@ -30,3 +30,23 @@ def test_parses_count_each_line():
     graph = parse_program("COUNT EACH group")
 
     assert graph.steps == [Count(noun="group")]
+
+
+def test_parses_full_top_k_frequent_pipeline():
+    program = "\n".join(
+        [
+            "GROUP nums BY value",
+            "COUNT EACH group",
+            "ORDER BY count DESC",
+            "TAKE 10",
+        ]
+    )
+
+    graph = parse_program(program)
+
+    assert graph.steps == [
+        Group(source="nums", key="value"),
+        Count(noun="group"),
+        Order(key="count", descending=True),
+        Take(count=10),
+    ]
