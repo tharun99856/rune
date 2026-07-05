@@ -13,7 +13,13 @@ class Order:
     descending: bool = False
 
 
-Step = Union[Take, Order]
+@dataclass(frozen=True)
+class Group:
+    source: str
+    key: str
+
+
+Step = Union[Take, Order, Group]
 
 
 @dataclass(frozen=True)

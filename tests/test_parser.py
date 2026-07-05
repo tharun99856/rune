@@ -1,4 +1,4 @@
-from lang.model import Order, Take
+from lang.model import Group, Order, Take
 from lang.parser import parse_program
 
 
@@ -18,3 +18,9 @@ def test_parses_order_by_defaults_to_ascending():
     graph = parse_program("ORDER BY count")
 
     assert graph.steps == [Order(key="count", descending=False)]
+
+
+def test_parses_group_by_line():
+    graph = parse_program("GROUP nums BY value")
+
+    assert graph.steps == [Group(source="nums", key="value")]

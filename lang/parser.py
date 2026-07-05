@@ -1,5 +1,5 @@
 from lang.lexer import tokenize_program
-from lang.model import Order, Take, TransformationGraph
+from lang.model import Group, Order, Take, TransformationGraph
 
 
 def _parse_line(tokens):
@@ -11,6 +11,9 @@ def _parse_line(tokens):
         key = tokens[2].value
         descending = len(tokens) > 3 and tokens[3].value == "DESC"
         return Order(key=key, descending=descending)
+    if head.value == "GROUP":
+        # tokens: GROUP <source> BY <key>
+        return Group(source=tokens[1].value, key=tokens[3].value)
     raise ValueError(f"unrecognized step starting with {head.value!r}")
 
 
