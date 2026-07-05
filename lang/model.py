@@ -19,7 +19,12 @@ class Group:
     key: str
 
 
-Step = Union[Take, Order, Group]
+@dataclass(frozen=True)
+class Count:
+    noun: str
+
+
+Step = Union[Take, Order, Group, Count]
 
 
 @dataclass(frozen=True)

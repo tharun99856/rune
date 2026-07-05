@@ -1,11 +1,14 @@
 from lang.lexer import tokenize_program
-from lang.model import Group, Order, Take, TransformationGraph
+from lang.model import Count, Group, Order, Take, TransformationGraph
 
 
 def _parse_line(tokens):
     head = tokens[0]
     if head.value == "TAKE":
         return Take(count=int(tokens[1].value))
+    if head.value == "COUNT":
+        # tokens: COUNT EACH <noun>
+        return Count(noun=tokens[2].value)
     if head.value == "ORDER":
         # tokens: ORDER BY <key> [ASC|DESC]
         key = tokens[2].value

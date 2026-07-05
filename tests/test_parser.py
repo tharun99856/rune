@@ -1,4 +1,4 @@
-from lang.model import Group, Order, Take
+from lang.model import Count, Group, Order, Take
 from lang.parser import parse_program
 
 
@@ -24,3 +24,9 @@ def test_parses_group_by_line():
     graph = parse_program("GROUP nums BY value")
 
     assert graph.steps == [Group(source="nums", key="value")]
+
+
+def test_parses_count_each_line():
+    graph = parse_program("COUNT EACH group")
+
+    assert graph.steps == [Count(noun="group")]
