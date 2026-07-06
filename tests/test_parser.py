@@ -1,5 +1,5 @@
-from lang.model import Count, Group, Order, Take
-from lang.parser import parse_program
+from rune.model import Count, Group, Order, Take
+from rune.parser import parse_program
 
 
 def test_parses_take_line():

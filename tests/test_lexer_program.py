@@ -1,4 +1,4 @@
-from lang.lexer import Token, tokenize_program
+from rune.lexer import Token, tokenize_program
 
 
 def test_tokenize_program_splits_into_per_line_token_lists():

@@ -1,4 +1,4 @@
-from lang.lexer import Token, tokenize
+from rune.lexer import Token, tokenize
 
 
 def test_tokenizes_keyword_and_number():

@@ -1,5 +1,5 @@
-from lang.lexer import tokenize_program
-from lang.model import Count, Group, Order, Take, TransformationGraph
+from rune.lexer import tokenize_program
+from rune.model import Count, Group, Order, Take, TransformationGraph
 
 
 def _parse_line(tokens):
