@@ -267,10 +267,10 @@ this carefully instead of acting on the first plausible-looking number.
 
 # Primitives (established, already in the grammar)
 
-See `docs/primitives/GROUP.md`, `COUNT.md`, `ORDER.md`, `TAKE.md` for why each
+See `docs/language/primitives/GROUP.md`, `COUNT.md`, `ORDER.md`, `TAKE.md` for why each
 of the four current verbs exists.
 
 # Primitives (candidates, not yet decided)
 
-See `docs/primitives/candidates/` — one page per open capability question
+See `docs/language/primitives/candidates/` — one page per open capability question
 above, named after the *capability*, not a presumed keyword spelling.

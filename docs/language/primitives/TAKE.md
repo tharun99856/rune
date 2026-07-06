@@ -13,7 +13,7 @@ near-universal last step.
 **Important limitation, surfaced by problem 003 (First Unique):** TAKE
 selects by *rank/position*, never by *predicate*. "Take the first element
 matching a condition" is a different, currently unsupported shape — see
-`docs/primitives/candidates/sequence-filter-with-fallback.md`. Do not extend
+`docs/language/primitives/candidates/sequence-filter-with-fallback.md`. Do not extend
 TAKE itself to silently absorb predicate logic; keep the two shapes distinct
 until there's a real reason to merge them.
 
