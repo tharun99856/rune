@@ -1,4 +1,5 @@
 from rune.model import Count, Group, Order, Take
+from rune.optimizer import TopK
 from rune.runner import CountedBucket, GroupedBucket, run_program, run_step
 
 
@@ -70,4 +71,19 @@ def test_run_program_executes_top_k_frequent_end_to_end():
     result = run_program(steps, data)
 
     assert [b.key for b in result] == [4, 1]
+    assert [b.count for b in result] == [4, 3]
+
+
+def test_top_k_step_selects_highest_by_key_without_full_sort():
+    buckets = [
+        CountedBucket(key=1, count=3),
+        CountedBucket(key=2, count=1),
+        CountedBucket(key=3, count=4),
+        CountedBucket(key=4, count=2),
+    ]
+    step = TopK(key="count", descending=True, count=2)
+
+    result = run_step(step, buckets)
+
+    assert [b.key for b in result] == [3, 1]
     assert [b.count for b in result] == [4, 3]

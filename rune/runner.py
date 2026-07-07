@@ -1,6 +1,8 @@
+import heapq
 from dataclasses import dataclass
 
 from rune.model import Count, Group, Order, Take
+from rune.optimizer import TopK
 
 
 @dataclass(frozen=True)
@@ -38,6 +40,9 @@ def run_step(step, current):
         return sorted(current, key=lambda item: _extract(item, step.key), reverse=step.descending)
     if isinstance(step, Take):
         return current[: step.count]
+    if isinstance(step, TopK):
+        selector = heapq.nlargest if step.descending else heapq.nsmallest
+        return selector(step.count, current, key=lambda item: _extract(item, step.key))
     raise ValueError(f"unsupported step: {step!r}")
 
 
