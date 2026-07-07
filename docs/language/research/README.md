@@ -43,7 +43,7 @@ behind a decision is still legible, not just the decision itself.
 ## The governing rule
 
 **Never design Rune for tomorrow's problem. Design Rune for yesterday's 50
-problems.** If today's problem screams for a new verb, that's not evidence —
+problems.** If today's problem screams for a new concept, that's not evidence —
 it's a mood. If fifty independently-solved problems quietly ask for the same
 capability, that's evidence. See Law 9 in
 `docs/language/philosophy/style-laws.md`.

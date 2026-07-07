@@ -20,4 +20,4 @@ until there's a real reason to merge them.
 **Rejected designs:** None yet.
 
 **Future work:** Resolve the filter-with-fallback candidate before deciding
-whether it's a new verb, a modifier on TAKE, or something else.
+whether it's a new concept, a modifier on TAKE, or something else.

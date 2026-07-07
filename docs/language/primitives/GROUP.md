@@ -21,7 +21,7 @@ slice, not derived from pressure. Worth revisiting once more problems accumulate
 a *computed* key (e.g. `GROUP nums BY (target - value)`), not just a literal
 field reference? This would extend GROUP's reach into territory currently
 assumed to need a new relation/join primitive (Two Sum). Unresolved — this is
-exactly the kind of question that should be answered before adding a new verb.
+exactly the kind of question that should be answered before adding a new concept.
 
 **Future work:** Resolve the computed-key question before considering a
 separate MATCH/JOIN primitive.

@@ -13,11 +13,11 @@ constraint, not a vague intention.
   parsing. "Find the shortest safe route" is a stated long-term ambition, not
   a v1 target — realizing it in general is algorithm synthesis, a much harder
   problem than compiling a closed grammar.
-- **A Python wrapper or a pseudocode formatter.** Verbs express intent, not
-  Python idioms with different spelling. See Law 4 and Law 7 in
+- **A Python wrapper or a pseudocode formatter.** Concepts express intent,
+  not Python idioms with different spelling. See Law 4 and Law 7 in
   `docs/language/philosophy/style-laws.md`.
 - **A query language competing with SQL.** Rune borrows relational algebra's
-  compositional discipline (small verb set, provable equivalences) as a
+  compositional discipline (small concept set, provable equivalences) as a
   pattern, not as a target to out-feature.
 - **An AI coding assistant, or "the AI language."** The eventual recovery
   layer is one feature of Rune, not its identity. Explicitly decided — see

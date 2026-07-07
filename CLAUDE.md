@@ -27,7 +27,7 @@ If you believe a new keyword or grammar change is needed:
 4. Apply the four-question order, in this order, every time:
    - Can the current grammar already express this (even awkwardly)?
    - Can it be a compiler-side rewrite of something already expressible?
-   - Can it be syntax sugar over existing verbs?
+   - Can it be syntax sugar over existing concepts?
    - Only then: is a genuinely new capability needed — and even so, name the
      *capability*, not a keyword. Syntax comes last, after the capability is
      confirmed by multiple independent problems, not the first one that fails.

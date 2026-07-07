@@ -35,9 +35,9 @@ has nothing to do with it yet.
 accumulates enough independent problems to be promoted.
 **Maintenance Cost:** Low — a discipline, not a mechanism.
 
-**Decision:** No new verb is added to the parser until real problems, tested
-against the actual running grammar, demonstrate it's needed — not reasoned
-about in the abstract.
+**Decision:** No new concept (and therefore no new keyword) is added to the
+parser until real problems, tested against the actual running grammar,
+demonstrate it's needed — not reasoned about in the abstract.
 
 **Reason:** Prevents keyword inflation, the most common failure mode of
 language projects. See `docs/language/philosophy/style-laws.md` Law 5 and 8.
@@ -48,9 +48,8 @@ language projects. See `docs/language/philosophy/style-laws.md` Law 5 and 8.
 
 **Category:** Build Process
 **Status:** Accepted
-**Revisit:** Per-candidate, at the moment a capability is actually promoted
-to a real verb — only then does it get a real name and move out of
-`candidates/`.
+**Revisit:** Per-candidate, at the moment a concept is actually promoted and
+given a real keyword — only then does it move out of `candidates/`.
 **Maintenance Cost:** Low.
 
 **Decision:** Files like `sequence-filter-with-fallback.md` are named after
@@ -76,7 +75,7 @@ count.
 **Decision:** The first pass of the atlas tallied Contains Duplicate
 alongside First Unique Character as both "needing a filter" (WHERE). Re-examined
 against the four-question discipline, Contains Duplicate is already solved by
-existing verbs (`GROUP...ORDER DESC...TAKE 1`); its only remaining gap is
+existing concepts (spelled `GROUP...ORDER DESC...TAKE 1`); its only remaining gap is
 interpreting a final scalar comparison — a different, much smaller question.
 
 **Reason:** This is the concrete proof the atlas's discipline works: it
@@ -127,3 +126,29 @@ still be a good, usable language on its own deterministic merits.
 obsolete the moment that capability is superseded or commoditized. The
 deterministic core (grammar, parser, rewrite engine, strategy selection) is
 what should still matter in twenty years.
+
+---
+
+## Internal vocabulary: "concept" and "keyword" are never the same word
+
+**Category:** Architecture
+**Status:** Accepted
+**Revisit:** Permanent.
+**Maintenance Cost:** Low — a vocabulary discipline, applied across existing
+docs, not a new mechanism.
+
+**Decision:** Stop calling `GROUP`, `ORDER`, `TAKE`, `COUNT` "verbs" as if the
+spelling were the fundamental unit. A **concept** (Grouping, Ordering,
+Selection, Aggregation, and future candidates like Stateful Scan or
+Traversal) is the semantic idea. A **keyword** is today's spelling of one
+concept. `GROUP` could later legally become `CLUSTER` without the concept of
+Grouping changing at all.
+
+**Reason:** This distinction becomes load-bearing the moment Rune has more
+than one candidate spelling for the same idea, or the moment a keyword needs
+renaming for readability reasons unrelated to what it does. Making it
+explicit now, while there are only four keywords, costs nothing; retrofitting
+it after dozens of docs conflate the two would not.
+
+**Trade-offs:** None — a same-day terminology sweep across existing docs
+(no new files beyond this entry), not new process.

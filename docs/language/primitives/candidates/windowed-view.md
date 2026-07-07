@@ -4,7 +4,7 @@
 
 **Why is this being considered?**
 A bounded, moving view over a sequence — fixed size or expanding/contracting
-— cannot be expressed with any current verb.
+— cannot be expressed with any current concept.
 
 **Problems requiring it:** 013 (Sliding Window Maximum, fixed size), 014
 (Longest Substring Without Repeating Characters, variable size).

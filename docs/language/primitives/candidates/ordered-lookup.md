@@ -6,7 +6,7 @@ cleanest/most atomic candidate found so far.
 **Why is this being considered?**
 Binary Search needs to locate a specific target value's position within a
 sorted collection — this is not a group, not an aggregation, not a rank
-selection; none of the current verbs come close.
+selection; none of the current concepts come close.
 
 **Problems requiring it:** 011 (Binary Search) only.
 

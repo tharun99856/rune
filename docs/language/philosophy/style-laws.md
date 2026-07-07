@@ -8,9 +8,11 @@ problems, not by re-arguing from principle.
 
 ## Law 1 — Every statement begins with intent
 
-Every statement starts with a verb naming a transformation (`GROUP`, `COUNT`,
-`ORDER`, `TAKE`, and future candidates like `FIND`, `EXPLORE`). Never with an
-implementation (`HashMap`, `Heap`, `DFS`).
+Every statement starts with a keyword naming a concept — Grouping, Ordering,
+Selection, and so on — currently spelled `GROUP`, `COUNT`, `ORDER`, `TAKE`.
+The concept is the fixed thing; the spelling isn't (see the note at the
+bottom of this file). Never starts with an implementation (`HashMap`,
+`Heap`, `DFS`) — that's not a concept at all, spelled any way.
 
 ## Law 2 — Composition is vertical
 
@@ -61,9 +63,9 @@ transformations belong to humans.
 
 ## Law 8 — Capability before syntax
 
-Never name a keyword before confirming the underlying capability is
+Never name a keyword before confirming the underlying concept is
 genuinely missing, genuinely can't be expressed by composing existing
-verbs, and genuinely isn't a compiler-side rewrite or sugar question in
+concepts, and genuinely isn't a compiler-side rewrite or sugar question in
 disguise. Discovered the hard way: an early draft of this atlas proposed
 `RETURN`/`WHERE`/`ELSE` for First Unique Character before checking whether
 the *capability itself* was even correctly scoped — it wasn't (Contains
@@ -73,7 +75,7 @@ for the full account.
 
 ## Law 9 — Design for yesterday's 50 problems, never tomorrow's one
 
-If today's problem screams for a new verb, that's a mood, not evidence. If
+If today's problem screams for a new concept, that's a mood, not evidence. If
 fifty independently-solved problems quietly ask for the same capability,
 that's evidence. A candidate is evaluated against accumulated history, never
 against how urgent the current problem feels. This is why
@@ -99,3 +101,15 @@ IN sorted_numbers
 ```
 
 Two lines, still a pipeline — not a special case.
+
+## Concept vs. syntax
+
+Internally, "concept" and "keyword" are never the same word. `GROUP`,
+`ORDER`, `TAKE`, `COUNT` are today's spellings. The concepts they spell —
+Grouping, Ordering, Selection, Aggregation — are the fixed thing. A concept
+could legally get a different spelling later (`GROUP` → `CLUSTER`, say)
+without changing what it means; a keyword by itself is not evidence of
+anything. Every place in this repo that talks about "the four current
+X" means four *concepts*, each with one current spelling. See
+`docs/language/decisions/DECISIONS.md` for when and why this distinction was
+made explicit.

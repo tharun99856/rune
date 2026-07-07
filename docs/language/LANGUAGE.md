@@ -33,8 +33,9 @@ and nobody notices until it's already happened.
 
 ## What sits at each layer today
 
-- **Grammar** (`docs/language/grammar/current.md`): four verbs, frozen. The
-  authoritative description of what a valid Rune program looks like.
+- **Grammar** (`docs/language/grammar/current.md`): four concepts, four
+  keywords, frozen. The authoritative description of what a valid Rune
+  program looks like.
 - **Parser**: `rune/lexer.py` tokenizes, `rune/parser.py` builds the IR.
   Implements the grammar; does not extend it. If parsing something requires
   a capability the grammar doesn't describe, that's a grammar question,

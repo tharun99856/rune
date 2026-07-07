@@ -4,7 +4,7 @@
 
 **Why is this being considered?**
 Container With Most Water needs two positions converging from opposite ends
-of a sequence — no current verb expresses this.
+of a sequence — no current concept expresses this.
 
 **Problems requiring it:** 017 (Container With Most Water) only.
 

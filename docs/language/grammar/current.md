@@ -4,8 +4,8 @@ This documents exactly what `rune/parser.py` accepts today. It is kept in
 sync with the parser deliberately — if this file and the parser disagree,
 the parser is the ground truth and this file is stale.
 
-**Status: frozen.** No new verbs until `docs/language/atlas/algorithm-atlas.md`
-produces enough independent evidence to promote a candidate from
+**Status: frozen.** No new keywords until `docs/language/atlas/algorithm-atlas.md`
+produces enough independent evidence to promote a candidate concept from
 `docs/language/primitives/candidates/`.
 
 ## Program structure
@@ -14,14 +14,17 @@ A Rune program is a sequence of lines, each one pipeline step. Steps compose
 vertically — each line transforms the result of the previous one. No braces,
 no semicolons, no nested expressions.
 
-## Verbs
+## Keywords (today's spelling of each concept)
 
-```
-GROUP <source> BY <key>
-COUNT EACH <noun>
-ORDER BY <key> [ASC|DESC]        -- defaults to ASC if omitted
-TAKE <count>
-```
+| Concept | Keyword |
+|---|---|
+| Grouping | `GROUP <source> BY <key>` |
+| Aggregation | `COUNT EACH <noun>` |
+| Ordering | `ORDER BY <key> [ASC\|DESC]` — defaults to ASC if omitted |
+| Selection | `TAKE <count>` |
+
+This file documents spelling. `docs/language/philosophy/style-laws.md` (the
+concept-vs-syntax note) documents why the two columns are kept separate.
 
 ## Lexical rules
 

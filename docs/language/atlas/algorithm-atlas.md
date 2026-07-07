@@ -10,7 +10,7 @@ rules — and to resist inventing keywords just because a problem failed.
 **Discipline, applied to every failure, in this order:**
 1. Can the current language already express this (even awkwardly)?
 2. Can this be a compiler rewrite of something already expressible?
-3. Can this be syntax sugar over existing verbs?
+3. Can this be syntax sugar over existing concepts?
 4. Only then: does this need a genuinely new primitive — and even so, the
    *capability* is established before any keyword/spelling is chosen.
 
@@ -22,7 +22,7 @@ an open question, never a conclusion.
 
 ## Legend
 
-- ✅ Already expressible with current verbs
+- ✅ Already expressible with current concepts
 - 🔁 Candidate for compiler rewrite
 - ✨ Candidate for syntax sugar
 - ❓ Genuinely open — capability unclear, naming unclear
@@ -116,7 +116,7 @@ grammar question at all.
 step — nothing expresses "walk left to right, extend or close the current
 interval."
 
-**Q1–Q3:** No existing verb or composition covers a running accumulate-while-scanning pass.
+**Q1–Q3:** No existing concept or composition covers a running accumulate-while-scanning pass.
 
 **Q4:** New capability needed — a stateful, left-to-right scan that carries
 forward state. Name and exact shape undecided.
@@ -158,9 +158,9 @@ convenient bucket, the same way #003/#004 were briefly conflated.**
 
 **Human Solution:** Find a target's position in a sorted collection.
 
-**Current Language:** ❌ `FIND target / IN sorted_numbers` — no verb resembling this exists. **Verified.**
+**Current Language:** ❌ `FIND target / IN sorted_numbers` — no concept resembling this exists. **Verified.**
 
-**Q1–Q3:** No existing verb or composition searches by value; GROUP/ORDER/TAKE
+**Q1–Q3:** No existing concept or composition searches by value; GROUP/ORDER/TAKE
 operate over whole collections or ranks, never "locate this specific value."
 
 **Q4:** New capability needed. Structurally the most atomic candidate found
@@ -176,13 +176,13 @@ so far — doesn't decompose further, only one data point, name undecided.
 
 **Human Solution:** Find two elements summing to target; return positions.
 
-**Current Language:** ❌ — no verb relates pairs of elements.
+**Current Language:** ❌ — no concept relates pairs of elements.
 
 **Q1, re-examined:** does `GROUP` already cover this if it supported a
 *computed* key rather than only a literal field? E.g. grouping by
 `target - value` instead of `value` might get partway there. This wasn't
 considered in the first pass and is a genuinely open alternative to "add a
-new MATCH/JOIN verb" — **extending an existing primitive's expressiveness vs.
+new MATCH/JOIN concept" — **extending an existing primitive's expressiveness vs.
 adding a new one** is exactly the kind of choice this atlas should force
 before deciding.
 
@@ -198,12 +198,12 @@ relation primitive), not yet one data point clearly pointing either way.
 **Human Solution:** A bounded, moving view over a sequence (fixed size for
 #013, expanding/contracting for #014).
 
-**Current Language:** ❌ both — no verb creates any kind of windowed view.
+**Current Language:** ❌ both — no concept creates any kind of windowed view.
 
 **Q1–Q3:** No existing composition applies.
 
 **Q4:** New capability needed, likely one shape with a fixed/variable
-property rather than two separate verbs — but only two data points so far.
+property rather than two separate concepts — but only two data points so far.
 
 **Design Decision:** ❓ Open.
 
@@ -230,7 +230,7 @@ adjacency or connectivity at all.
 
 **Human Solution:** Two lines that, with the x-axis, hold the most water.
 
-**Current Language:** ❌ — no verb converges two positions.
+**Current Language:** ❌ — no concept converges two positions.
 
 **Design Decision:** ❓ Open — possibly the same shape as Window (a window
 that shrinks from both ends rather than slides), possibly distinct. One data
@@ -268,7 +268,7 @@ this carefully instead of acting on the first plausible-looking number.
 # Primitives (established, already in the grammar)
 
 See `docs/language/primitives/GROUP.md`, `COUNT.md`, `ORDER.md`, `TAKE.md` for why each
-of the four current verbs exists.
+of the four current concepts exists.
 
 # Primitives (candidates, not yet decided)
 
