@@ -1,0 +1,4 @@
+GROUP nums BY value
+COUNT EACH group
+ORDER BY count DESC
+TAKE 10
