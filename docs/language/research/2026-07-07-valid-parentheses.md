@@ -55,6 +55,15 @@ No grammar change. Updated `stateful-scan-or-recurrence.md` with this data
 point and the state-shape distinction. Logged in `LANGUAGE_GAPS.md` as
 reinforcing evidence, not a new gap.
 
+## Outcome
+
+🧩 New capability candidate — but explicitly *not a new candidate*: evidence
+for the existing `stateful-scan-or-recurrence` entry. Considered ❌ (wrong
+abstraction) and rejected — one problem can't establish that, and nothing
+here suggests the *pipeline* model is wrong, only that one candidate
+*within* it may be too broad. See `ABSTRACTION_QUESTIONS.md` for what would
+actually be needed to reach that outcome.
+
 ## Next experiment
 
 A second stack-shaped problem (e.g. Daily Temperatures, or Largest Rectangle

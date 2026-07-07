@@ -71,6 +71,23 @@ Duplicate was wrongly bundled into the same need and turned out not to
 require anything new at all). See `docs/language/decisions/DECISIONS.md`
 for the full account.
 
+## Law 9 — Design for yesterday's 50 problems, never tomorrow's one
+
+If today's problem screams for a new verb, that's a mood, not evidence. If
+fifty independently-solved problems quietly ask for the same capability,
+that's evidence. A candidate is evaluated against accumulated history, never
+against how urgent the current problem feels. This is why
+`docs/language/research/` exists — a lone, whichever-problem-is-in-front-of-you
+justification does not clear this bar, no matter how clean the resulting
+syntax would look.
+
+One consequence worth stating plainly: a negative result — "this problem
+doesn't need anything new, it's the same capability already tracked" — is
+not a wasted day. It's the ritual working. See
+`docs/language/research/2026-07-07-valid-parentheses.md` for a worked
+example: the finding was "no new gap," and that was the valuable outcome,
+not a consolation prize for not finding one.
+
 ## Uniformity note
 
 Even single-shape problems stay pipelines, for consistency, rather than

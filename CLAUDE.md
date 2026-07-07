@@ -43,6 +43,22 @@ If a user's request reads like the first kind, ask which specific,
 already-scoped piece they mean rather than inferring the widest possible
 interpretation.
 
+## Design for yesterday's 50 problems, never today's one
+
+Law 9 in `docs/language/philosophy/style-laws.md`. A single problem — however
+urgent it feels right now — is a mood, not evidence. Evidence is fifty
+independently-solved problems in `docs/language/research/` quietly asking
+for the same thing.
+
+Every research journal entry ends with exactly one outcome, never invented
+to force a resolution: ✅ already expressible, 🔁 compiler rewrite, ✨ syntax
+sugar, 🧩 new capability candidate, or ❌ wrong abstraction (the pipeline
+model itself doesn't fit a whole *category*, not just one problem — see
+`docs/language/research/ABSTRACTION_QUESTIONS.md`; this outcome requires
+~20 independent problems in one category all failing the same way, never one).
+A "no new gap, this confirms an existing candidate" result is not a wasted
+entry — it's the discipline working. Don't manufacture novelty to avoid it.
+
 ## Everything else
 
 - TDD for all parser/IR/optimizer/backend work: failing test first, minimal
