@@ -18,7 +18,7 @@ id,problem,category,outcome,concept
 017,Container With Most Water,Arrays,GAP,Window
 018,Valid Parentheses,Stacks,GAP,Stateful Scan
 019,Maximum Depth of Binary Tree,Trees,GAP,Traversal;Aggregation
-020,Validate Binary Search Tree,Trees,GAP,Traversal;Stateful Scan
+020,Validate Binary Search Tree,Trees,GAP,Traversal
 021,Lowest Common Ancestor (BST),Trees,GAP,Traversal;Ordered Lookup
 022,Binary Tree Level Order Traversal,Trees,GAP,Traversal;Grouping
 023,Diameter of Binary Tree,Trees,GAP,Traversal;Aggregation
