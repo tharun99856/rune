@@ -1,0 +1,19 @@
+id,problem,category,outcome,concept
+001,Top K Frequent Elements,Arrays,WORKS,Grouping;Aggregation;Ordering;Selection
+002,Group Anagrams,Strings,WORKS,Grouping
+003,First Unique Character,Strings,GAP,Filtering
+004,Contains Duplicate,Arrays,WORKS,Grouping;Aggregation;Ordering;Selection
+005,Merge Intervals,Intervals,GAP,Ordering;Stateful Scan
+006,Maximum Subarray (Kadane's),DP,GAP,Stateful Scan
+007,Climbing Stairs,DP,GAP,Stateful Scan
+008,Coin Change,DP,GAP,Stateful Scan
+009,Longest Common Subsequence,DP,GAP,Stateful Scan;Relation
+010,Reverse Linked List,Linked Lists,GAP,Stateful Scan
+011,Binary Search,Arrays,GAP,Ordered Lookup
+012,Two Sum,Arrays,GAP,Relation
+013,Sliding Window Maximum,Arrays,GAP,Window
+014,Longest Substring Without Repeating Characters,Strings,GAP,Window
+015,Number of Islands,Graphs,GAP,Traversal
+016,Course Schedule,Graphs,GAP,Traversal
+017,Container With Most Water,Arrays,GAP,Window
+018,Valid Parentheses,Stacks,GAP,Stateful Scan
