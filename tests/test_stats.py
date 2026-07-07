@@ -1,4 +1,10 @@
-from rune.stats import compute_stats, format_report, load_ledger
+from rune.stats import (
+    compute_concept_trend,
+    compute_review_queue,
+    compute_stats,
+    format_report,
+    load_ledger,
+)
 
 
 def _rows():
@@ -67,3 +73,38 @@ def test_format_report_contains_category_coverage_and_concept_frequency():
     assert "Arrays" in report and "50%" in report
     assert "Grouping" in report
     assert "Traversal" in report
+
+
+def _batched_rows():
+    return [
+        {"id": "1", "concept": "Grouping;Ordering", "batch": "1"},
+        {"id": "2", "concept": "Grouping", "batch": "1"},
+        {"id": "3", "concept": "Window", "batch": "1"},
+        {"id": "4", "concept": "Window;Traversal", "batch": "2"},
+        {"id": "5", "concept": "Traversal", "batch": "2"},
+    ]
+
+
+def test_concept_trend_reports_new_concepts_per_batch():
+    trend = compute_concept_trend(_batched_rows())
+
+    assert trend == [
+        {"batch": "1", "problems": 3, "cumulative_concepts": 3, "new_concepts": 3},
+        {"batch": "2", "problems": 2, "cumulative_concepts": 4, "new_concepts": 1},
+    ]
+
+
+def test_review_queue_flags_concepts_at_or_above_threshold():
+    rows = [{"concept": "Window"}] * 3 + [{"concept": "Grouping"}] * 5
+
+    queue = compute_review_queue(rows, threshold=5)
+
+    assert queue == [{"concept": "Grouping", "count": 5}]
+
+
+def test_review_queue_is_empty_below_threshold():
+    rows = [{"concept": "Window"}] * 3
+
+    queue = compute_review_queue(rows, threshold=5)
+
+    assert queue == []

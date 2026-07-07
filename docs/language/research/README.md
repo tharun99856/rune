@@ -47,3 +47,10 @@ problems.** If today's problem screams for a new concept, that's not evidence â€
 it's a mood. If fifty independently-solved problems quietly ask for the same
 capability, that's evidence. See Law 9 in
 `docs/language/philosophy/style-laws.md`.
+
+**An investigation (splitting/merging a candidate) is capped, not open-ended.**
+Collect evidence, split or merge, write the verdict, move on â€” this should
+take about an hour, not become its own research project. `python -m
+rune.cli mine` exists specifically to shorten this loop: it flags which
+concept is under the most pressure so the next investigation doesn't start
+from "what should I even look at."

@@ -36,6 +36,48 @@ def compute_stats(rows):
     }
 
 
+def compute_concept_trend(rows):
+    seen = set()
+    by_batch = {}
+    for row in rows:
+        by_batch.setdefault(row["batch"], []).append(row)
+
+    trend = []
+    for batch in sorted(by_batch, key=lambda b: int(b)):
+        batch_rows = by_batch[batch]
+        new_this_batch = 0
+        for row in batch_rows:
+            for concept in row["concept"].split(";"):
+                concept = concept.strip()
+                if concept and concept not in seen:
+                    seen.add(concept)
+                    new_this_batch += 1
+        trend.append(
+            {
+                "batch": batch,
+                "problems": len(batch_rows),
+                "cumulative_concepts": len(seen),
+                "new_concepts": new_this_batch,
+            }
+        )
+    return trend
+
+
+def compute_review_queue(rows, threshold):
+    concept_counts = Counter()
+    for row in rows:
+        for concept in row["concept"].split(";"):
+            concept = concept.strip()
+            if concept:
+                concept_counts[concept] += 1
+
+    return [
+        {"concept": concept, "count": count}
+        for concept, count in sorted(concept_counts.items(), key=lambda kv: -kv[1])
+        if count >= threshold
+    ]
+
+
 OUTCOME_LABELS = [
     ("WORKS", "Works"),
     ("REWRITE", "Needs rewrite"),
