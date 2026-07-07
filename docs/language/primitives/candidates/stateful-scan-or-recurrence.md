@@ -1,8 +1,10 @@
 # Candidate: stateful scan / recurrence (naming undecided — NOT "SCAN")
 
-**Status:** Under investigation. Leading candidate by raw count (7), but the
-count itself may be over-aggregated — see the open sub-question below, now
-sharper than before.
+**Status:** Under investigation. Leading candidate by raw count (19, after
+the 2026-07-08 batch — was 7), a 2.7x lead over the next candidate
+(Traversal). Raw count now plausibly clears "yesterday's 50 problems," but
+promotion should wait on the open sub-question below, not on count alone —
+see `docs/language/research/2026-07-08-batch-002.md`.
 
 **Why is this being considered?**
 A running left-to-right pass carrying forward accumulated state (a sum that
@@ -10,9 +12,13 @@ can reset, a rolling count, a growing table, a stack, pointer relinking)
 shows up across DP, interval-merging, stack-matching, and linked-list
 problems, none of which are expressible with GROUP/COUNT/ORDER/TAKE.
 
-**Problems requiring it:** 005 (Merge Intervals), 006 (Kadane's), 007
-(Climbing Stairs), 008 (Coin Change), 009 (LCS), 010 (Reverse Linked List),
-and Valid Parentheses (`docs/language/research/2026-07-07-valid-parentheses.md`).
+**Problems requiring it:** 19 total — see `docs/language/ledger.csv` for the
+full list (id column, concept = "Stateful Scan"). Includes DP problems with
+O(1) rolling state (Kadane's, Climbing Stairs, House Robber), full-table DP
+(Coin Change, LCS, Word Break, Unique Paths, Edit Distance), stack-based
+(Valid Parentheses, Evaluate RPN, Daily Temperatures), linked-list (Reverse
+List, Merge Two Sorted Lists, Add Two Numbers), and greedy running-state
+(Jump Game, Gas Station).
 
 **Open sub-question — do not merge prematurely:** at least three distinct
 state shapes now hide behind this one name: O(1) rolling state (Kadane's,

@@ -17,3 +17,36 @@ id,problem,category,outcome,concept
 016,Course Schedule,Graphs,GAP,Traversal
 017,Container With Most Water,Arrays,GAP,Window
 018,Valid Parentheses,Stacks,GAP,Stateful Scan
+019,Maximum Depth of Binary Tree,Trees,GAP,Traversal;Aggregation
+020,Validate Binary Search Tree,Trees,GAP,Traversal;Stateful Scan
+021,Lowest Common Ancestor (BST),Trees,GAP,Traversal;Ordered Lookup
+022,Binary Tree Level Order Traversal,Trees,GAP,Traversal;Grouping
+023,Diameter of Binary Tree,Trees,GAP,Traversal;Aggregation
+024,Serialize and Deserialize Binary Tree,Trees,GAP,Serialization
+025,Clone Graph,Graphs,GAP,Traversal;Relation
+026,Pacific Atlantic Water Flow,Graphs,GAP,Traversal
+027,Word Ladder,Graphs,GAP,Traversal;Relation
+028,Number of Connected Components (Union-Find),Graphs,GAP,Set Merging
+029,Alien Dictionary,Graphs,GAP,Traversal;Relation;Ordering
+030,House Robber,DP,GAP,Stateful Scan
+031,Longest Increasing Subsequence,DP,GAP,Stateful Scan
+032,Word Break,DP,GAP,Stateful Scan;Relation
+033,Unique Paths,DP,GAP,Stateful Scan
+034,Edit Distance,DP,GAP,Stateful Scan;Relation
+035,Subsets,Backtracking,GAP,Enumeration
+036,Permutations,Backtracking,GAP,Enumeration
+037,N-Queens,Backtracking,GAP,Enumeration
+038,Merge K Sorted Lists,Heaps,GAP,Ordering;Selection
+039,Find Median from Data Stream,Heaps,GAP,Streaming
+040,Single Number,Bit Manipulation,SUGAR,Aggregation
+041,Number of 1 Bits,Bit Manipulation,SUGAR,Aggregation
+042,Implement Trie,Tries,GAP,ADT Definition
+043,Merge Two Sorted Lists,Linked Lists,GAP,Stateful Scan
+044,Add Two Numbers,Linked Lists,GAP,Stateful Scan
+045,Min Stack,Stacks,GAP,ADT Definition
+046,Evaluate Reverse Polish Notation,Stacks,GAP,Stateful Scan
+047,Daily Temperatures,Stacks,GAP,Stateful Scan
+048,Jump Game,Greedy,GAP,Stateful Scan
+049,Gas Station,Greedy,GAP,Stateful Scan
+050,3Sum,Arrays,GAP,Ordering;Relation
+051,Trapping Rain Water,Arrays,GAP,Window

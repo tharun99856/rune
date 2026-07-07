@@ -30,7 +30,29 @@ new *concept* (`EXPLORE` still fits the pipeline shape fine as a single step —
 algorithms need control flow (conditional branching mid-traversal, revisits,
 early termination) that resists being expressed as one line at all.
 
-**Current evidence: 2 problems** (Number of Islands, Course Schedule), both
-still tagged 🧩 in the atlas, not ❌ — nowhere near the threshold. This is
-explicitly the next thing to watch as more graph problems accumulate in the
-research journal, not something to decide now.
+**Current evidence: 11 problems** (updated after the 2026-07-08 batch — was
+2). Still tagged 🧩, not ❌ — the ~20-problem threshold is closer than any
+other category but not crossed. Continue watching; still not deciding.
+
+## Other categories opened, both far earlier stage
+
+**Enumeration / Backtracking** (Subsets, Permutations, N-Queens — 3
+problems). Different concern than graph traversal: backtracking explores a
+decision tree the algorithm itself constructs (choose, recurse, undo), which
+doesn't obviously fit "one line transforms the previous line's result" at
+all — not even as a single atomic step the way `EXPLORE` might for graphs.
+3 problems is far too few to say anything; noted so it's tracked from the
+start rather than rediscovered later. See
+`docs/language/research/2026-07-08-batch-002.md`.
+
+**Streaming / online algorithms** (Find Median from Data Stream — 1
+problem) and **ADT definition** (Implement Trie, Min Stack — 2 problems).
+Grouped together because both share the same root tension, distinct from
+backtracking: every current concept assumes a complete input available up
+front. A streaming algorithm never has one; an ADT-definition problem isn't
+processing a collection at all, it's specifying a stateful object's
+operations. 1–2 problems each — nowhere near evidence, but plausibly not
+even the same *kind* of question as the other two categories here (these
+may turn out to be `docs/language/ANTI_GOALS.md` material — permanently out
+of scope — rather than a model that needs fixing). Left open rather than
+guessed at.
