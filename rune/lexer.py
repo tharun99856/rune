@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 
-KEYWORDS = {"GROUP", "BY", "COUNT", "EACH", "ORDER", "ASC", "DESC", "TAKE"}
+KEYWORDS = {
+    "GROUP", "BY", "COUNT", "EACH", "ORDER", "ASC", "DESC", "TAKE",
+    "EXPLORE", "FROM", "TO",
+}
 
 
 @dataclass(frozen=True)
