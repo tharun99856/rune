@@ -61,7 +61,13 @@ def main(argv=None):
         print(format_complexity_report())
         return 0
 
-    print("usage: python -m rune.cli [stats|mine|demo|complexity]")
+    if argv and argv[0] == "explain":
+        from rune.explain import format_explain_report
+
+        print(format_explain_report())
+        return 0
+
+    print("usage: python -m rune.cli [stats|mine|demo|complexity|explain]")
     return 1
 
 
