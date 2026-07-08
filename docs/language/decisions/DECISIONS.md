@@ -152,3 +152,35 @@ it after dozens of docs conflate the two would not.
 
 **Trade-offs:** None — a same-day terminology sweep across existing docs
 (no new files beyond this entry), not new process.
+
+---
+
+## Tie-breaking is a defined, deterministic rule -- not implementation-dependent
+
+**Category:** Architecture (correctness)
+**Status:** Accepted
+**Revisit:** Whenever a new backend is added, or `Order`/`TopK` gains a new
+tie-break-relevant field.
+**Maintenance Cost:** Low — one shared convention, applied consistently.
+
+**Decision:** When two items tie on the primary sort/selection key
+(`ORDER`'s key, or `TOP_K`'s), the secondary, deterministic tie-break is the
+item's own identity key, always ascending, regardless of the primary
+direction. Every backend must implement this exact rule, not just "a
+reasonable one."
+
+**Reason:** Building the presentable demo surfaced a real bug: `InterpreterBackend`
+(Python's stable `sorted`/`heapq`) and `NumbaBackend` (`numpy.argpartition`)
+picked *different* members of a tied group at the selection boundary — both
+individually correct counts, but a real correctness gap, because switching
+backends could silently change which result you got. This was caught by a
+test that forced an exact-order comparison on deliberately tied data, not by
+inspection — the mismatch didn't show up until a specific random seed
+happened to produce a tie, which is exactly why "run the demo, see if it
+looks right" isn't sufficient and an explicit tie-break rule is.
+
+**Trade-offs:** Slightly more code in each backend (a combined sort/score
+key instead of the naive one). `NumbaBackend.supports()` also now only
+claims `TopK(descending=True)` — the `descending=False` case was never
+implemented correctly in the first place (a second bug the same
+investigation caught) and is honestly excluded rather than silently wrong.

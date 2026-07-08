@@ -74,6 +74,33 @@ def test_run_program_executes_top_k_frequent_end_to_end():
     assert [b.count for b in result] == [4, 3]
 
 
+def test_order_breaks_ties_by_ascending_bucket_key():
+    buckets = [
+        CountedBucket(key=30, count=5),
+        CountedBucket(key=10, count=5),
+        CountedBucket(key=20, count=5),
+    ]
+    step = Order(key="count", descending=True)
+
+    result = run_step(step, buckets)
+
+    assert [b.key for b in result] == [10, 20, 30]
+
+
+def test_top_k_breaks_ties_the_same_way_as_order_does():
+    buckets = [
+        CountedBucket(key=30, count=5),
+        CountedBucket(key=10, count=5),
+        CountedBucket(key=20, count=5),
+        CountedBucket(key=40, count=9),
+    ]
+    step = TopK(key="count", descending=True, count=2)
+
+    result = run_step(step, buckets)
+
+    assert [b.key for b in result] == [40, 10]
+
+
 def test_top_k_step_selects_highest_by_key_without_full_sort():
     buckets = [
         CountedBucket(key=1, count=3),

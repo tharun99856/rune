@@ -36,6 +36,7 @@ class NumbaBackend(Backend):
             and steps[0].key == "value"
             and isinstance(steps[1], Count)
             and isinstance(steps[2], TopK)
+            and steps[2].descending  # only the descending (top-k) case is implemented and tested
         )
 
     def run(self, steps, data):
@@ -47,6 +48,15 @@ class NumbaBackend(Backend):
             )
         counts = _bincount(arr, self.domain_size)
         k = min(topk.count, int(np.count_nonzero(counts)))
-        top_idx = np.argpartition(counts, -k)[-k:] if k else np.array([], dtype=np.int64)
-        top_idx = top_idx[np.argsort(-counts[top_idx])]
+        if k == 0:
+            return []
+        # Deterministic tie-break: count descending, then key ascending --
+        # must match InterpreterBackend's rule exactly (see runner.py's
+        # _tiebreak), or switching backends can silently change which tied
+        # element you get. Encoded as one combined score so argpartition/
+        # argsort only ever need to compare a single number.
+        idx = np.arange(self.domain_size, dtype=np.int64)
+        combined = counts * (self.domain_size + 1) - idx
+        top_idx = np.argpartition(combined, -k)[-k:]
+        top_idx = top_idx[np.argsort(-combined[top_idx])]
         return [CountedBucket(key=int(i), count=int(counts[i])) for i in top_idx]

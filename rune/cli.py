@@ -49,7 +49,13 @@ def main(argv=None):
         print(_format_mine_report(rows))
         return 0
 
-    print("usage: python -m rune.cli [stats|mine]")
+    if argv and argv[0] == "demo":
+        from rune.demo import run_demo
+
+        print(run_demo())
+        return 0
+
+    print("usage: python -m rune.cli [stats|mine|demo]")
     return 1
 
 

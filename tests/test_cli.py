@@ -23,3 +23,12 @@ def test_mine_command_returns_zero_and_prints_trend_and_queue(capsys):
     assert "Concept trend" in captured.out
     assert "Review queue" in captured.out
     assert "confidence" not in captured.out.lower()
+
+
+def test_demo_command_returns_zero_and_prints_the_pipeline(capsys):
+    exit_code = main(["demo"])
+
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "Rewrote:" in captured.out
+    assert "MISMATCH" not in captured.out

@@ -47,3 +47,30 @@ def test_numba_backend_produces_same_result_as_interpreter():
     interpreter_pairs = sorted((b.key, b.count) for b in interpreter_result)
     numba_pairs = sorted((b.key, b.count) for b in numba_result)
     assert interpreter_pairs == numba_pairs
+
+
+def test_numba_backend_breaks_ties_identically_to_interpreter():
+    # Deliberately tied data: values 1, 2, 3 all occur exactly twice, so a
+    # naive comparison could pass by coincidence. Exact order must match --
+    # this is the case that surfaced a real cross-backend disagreement.
+    from rune.backends.interpreter_backend import InterpreterBackend
+
+    data = [1, 1, 2, 2, 3, 3, 4, 4, 4, 4]
+    interpreter_steps = [
+        Group(source="nums", key="value"),
+        Count(noun="group"),
+        Order(key="count", descending=True),
+        Take(count=3),
+    ]
+    numba_steps = [
+        Group(source="nums", key="value"),
+        Count(noun="group"),
+        TopK(key="count", descending=True, count=3),
+    ]
+
+    interpreter_result = InterpreterBackend().run(interpreter_steps, data)
+    numba_result = NumbaBackend(domain_size=5).run(numba_steps, data)
+
+    interpreter_pairs = [(b.key, b.count) for b in interpreter_result]
+    numba_pairs = [(b.key, b.count) for b in numba_result]
+    assert interpreter_pairs == numba_pairs == [(4, 4), (1, 2), (2, 2)]
