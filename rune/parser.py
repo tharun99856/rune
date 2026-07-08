@@ -1,5 +1,5 @@
 from rune.lexer import tokenize_program
-from rune.model import Count, Group, Order, Take, TransformationGraph
+from rune.model import Count, Explore, Group, Order, Take, TransformationGraph
 
 
 def _parse_line(tokens):
@@ -17,6 +17,10 @@ def _parse_line(tokens):
     if head.value == "GROUP":
         # tokens: GROUP <source> BY <key>
         return Group(source=tokens[1].value, key=tokens[3].value)
+    if head.value == "EXPLORE":
+        # tokens: EXPLORE <source> FROM <start> [TO <target>]
+        target = tokens[5].value if len(tokens) > 4 else None
+        return Explore(source=tokens[1].value, start=tokens[3].value, target=target)
     raise ValueError(f"unrecognized step starting with {head.value!r}")
 
 

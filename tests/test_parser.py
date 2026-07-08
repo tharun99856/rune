@@ -1,4 +1,4 @@
-from rune.model import Count, Group, Order, Take
+from rune.model import Count, Explore, Group, Order, Take
 from rune.parser import parse_program
 
 
@@ -50,3 +50,15 @@ def test_parses_full_top_k_frequent_pipeline():
         Order(key="count", descending=True),
         Take(count=10),
     ]
+
+
+def test_parses_explore_from_line():
+    graph = parse_program("EXPLORE graph FROM a")
+
+    assert graph.steps == [Explore(source="graph", start="a", target=None)]
+
+
+def test_parses_explore_from_to_line():
+    graph = parse_program("EXPLORE graph FROM a TO b")
+
+    assert graph.steps == [Explore(source="graph", start="a", target="b")]

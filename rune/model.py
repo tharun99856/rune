@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Union
+from typing import List, Optional, Union
 
 
 @dataclass(frozen=True)
@@ -24,7 +24,14 @@ class Count:
     noun: str
 
 
-Step = Union[Take, Order, Group, Count]
+@dataclass(frozen=True)
+class Explore:
+    source: str
+    start: str
+    target: Optional[str] = None
+
+
+Step = Union[Take, Order, Group, Count, Explore]
 
 
 @dataclass(frozen=True)
