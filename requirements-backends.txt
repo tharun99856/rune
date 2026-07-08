@@ -1,0 +1,6 @@
+# Optional. Only needed for rune.backends.numba_backend.
+# The parser, optimizer, and InterpreterBackend have zero dependencies
+# beyond the standard library -- this file exists so that stays true,
+# and so a missing C++/Rust/LLVM toolchain never blocks core Rune work.
+numba
+numpy
