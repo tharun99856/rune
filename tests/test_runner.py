@@ -1,6 +1,12 @@
 from rune.model import Count, Explore, Group, Order, Take
 from rune.optimizer import TopK
-from rune.runner import CountedBucket, GroupedBucket, run_program, run_step
+from rune.runner import (
+    CountedBucket,
+    GroupedBucket,
+    explore_with_explanation,
+    run_program,
+    run_step,
+)
 
 
 def test_group_by_value_buckets_identical_items():
@@ -151,3 +157,44 @@ def test_explore_with_unreachable_target_returns_none():
     result = run_step(Explore(source="graph", start="a", target="z"), graph)
 
     assert result is None
+
+
+# Chosen so that fewest-hops (a->b, 1 hop, weight 5) disagrees with
+# lowest-weight (a->c->b, 2 hops, weight 2) -- BFS-by-hop-count would give
+# the wrong answer here. Only Dijkstra gets this right.
+_WEIGHTED_GRAPH = {
+    "a": [("b", 5), ("c", 1)],
+    "b": [("d", 1)],
+    "c": [("b", 1), ("d", 10)],
+    "d": [],
+}
+
+
+def test_explore_picks_bfs_and_explains_why_for_unweighted_graphs():
+    graph = {"a": [("b", 1)], "b": [("c", 1)], "c": []}
+
+    result, explanation = explore_with_explanation(
+        Explore(source="graph", start="a", target=None), graph
+    )
+
+    assert result == {"a": 0, "b": 1, "c": 2}
+    assert explanation.strategy == "BFS"
+    assert "unweighted" in explanation.reason.lower() or "weight" in explanation.reason.lower()
+
+
+def test_explore_picks_dijkstra_and_explains_why_for_weighted_graphs():
+    result, explanation = explore_with_explanation(
+        Explore(source="graph", start="a", target=None), _WEIGHTED_GRAPH
+    )
+
+    assert result == {"a": 0, "c": 1, "b": 2, "d": 3}
+    assert explanation.strategy == "Dijkstra"
+
+
+def test_run_step_uses_dijkstra_automatically_for_weighted_graphs():
+    # The default execution path (no explanation needed) must still be
+    # correct -- BFS on a weighted graph would silently give the wrong
+    # hop-count-based answer instead of the true shortest weighted distance.
+    result = run_step(Explore(source="graph", start="a", target="b"), _WEIGHTED_GRAPH)
+
+    assert result == 2

@@ -18,6 +18,61 @@ def _bfs(graph, start):
     return distances
 
 
+def _dijkstra(graph, start):
+    distances = {start: 0}
+    heap = [(0, start)]
+    while heap:
+        dist, node = heapq.heappop(heap)
+        if dist > distances.get(node, float("inf")):
+            continue
+        for neighbor, weight in graph.get(node, []):
+            candidate = dist + weight
+            if candidate < distances.get(neighbor, float("inf")):
+                distances[neighbor] = candidate
+                heapq.heappush(heap, (candidate, neighbor))
+    return distances
+
+
+def _is_weighted(graph):
+    return any(weight != 1 for edges in graph.values() for _neighbor, weight in edges)
+
+
+@dataclass(frozen=True)
+class StrategyExplanation:
+    rule: str
+    strategy: str
+    reason: str
+
+
+def _select_shortest_path_strategy(graph):
+    if _is_weighted(graph):
+        return _dijkstra, StrategyExplanation(
+            rule="EXPLORE_STRATEGY_SELECTION",
+            strategy="Dijkstra",
+            reason=(
+                "Graph has edges with weight other than 1; BFS counts hops, "
+                "not weight, and would give the wrong shortest distance, so "
+                "Dijkstra's priority-queue relaxation is used instead."
+            ),
+        )
+    return _bfs, StrategyExplanation(
+        rule="EXPLORE_STRATEGY_SELECTION",
+        strategy="BFS",
+        reason=(
+            "All edges have uniform weight (unweighted graph); BFS gives "
+            "correct shortest paths in O(V+E), with less overhead than "
+            "Dijkstra's priority queue."
+        ),
+    )
+
+
+def explore_with_explanation(step, graph):
+    algorithm, explanation = _select_shortest_path_strategy(graph)
+    distances = algorithm(graph, step.start)
+    result = distances if step.target is None else distances.get(step.target)
+    return result, explanation
+
+
 @dataclass(frozen=True)
 class GroupedBucket:
     key: object
@@ -71,7 +126,8 @@ def run_step(step, current):
         selector = heapq.nlargest if step.descending else heapq.nsmallest
         return selector(step.count, current, key=_sort_key(step))
     if isinstance(step, Explore):
-        distances = _bfs(current, step.start)
+        algorithm, _explanation = _select_shortest_path_strategy(current)
+        distances = algorithm(current, step.start)
         if step.target is None:
             return distances
         return distances.get(step.target)
