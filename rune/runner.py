@@ -1,8 +1,21 @@
 import heapq
+from collections import deque
 from dataclasses import dataclass
 
-from rune.model import Count, Group, Order, Take
+from rune.model import Count, Explore, Group, Order, Take
 from rune.optimizer import TopK
+
+
+def _bfs(graph, start):
+    distances = {start: 0}
+    queue = deque([start])
+    while queue:
+        node = queue.popleft()
+        for neighbor, _weight in graph.get(node, []):
+            if neighbor not in distances:
+                distances[neighbor] = distances[node] + 1
+                queue.append(neighbor)
+    return distances
 
 
 @dataclass(frozen=True)
@@ -57,6 +70,11 @@ def run_step(step, current):
     if isinstance(step, TopK):
         selector = heapq.nlargest if step.descending else heapq.nsmallest
         return selector(step.count, current, key=_sort_key(step))
+    if isinstance(step, Explore):
+        distances = _bfs(current, step.start)
+        if step.target is None:
+            return distances
+        return distances.get(step.target)
     raise ValueError(f"unsupported step: {step!r}")
 
 

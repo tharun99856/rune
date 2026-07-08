@@ -1,4 +1,4 @@
-from rune.model import Count, Group, Order, Take
+from rune.model import Count, Explore, Group, Order, Take
 from rune.optimizer import TopK
 from rune.runner import CountedBucket, GroupedBucket, run_program, run_step
 
@@ -114,3 +114,40 @@ def test_top_k_step_selects_highest_by_key_without_full_sort():
 
     assert [b.key for b in result] == [3, 1]
     assert [b.count for b in result] == [4, 3]
+
+
+def test_explore_without_target_returns_bfs_distances_from_start():
+    # unweighted adjacency: node -> list of (neighbor, weight)
+    graph = {
+        "a": [("b", 1), ("c", 1)],
+        "b": [("d", 1)],
+        "c": [("d", 1)],
+        "d": [],
+        "e": [],  # unreachable from a
+    }
+    step = Explore(source="graph", start="a", target=None)
+
+    result = run_step(step, graph)
+
+    assert result == {"a": 0, "b": 1, "c": 1, "d": 2}
+
+
+def test_explore_with_target_returns_shortest_hop_count():
+    graph = {
+        "a": [("b", 1), ("c", 1)],
+        "b": [("d", 1)],
+        "c": [("d", 1)],
+        "d": [],
+    }
+
+    result = run_step(Explore(source="graph", start="a", target="d"), graph)
+
+    assert result == 2
+
+
+def test_explore_with_unreachable_target_returns_none():
+    graph = {"a": [("b", 1)], "b": [], "z": []}
+
+    result = run_step(Explore(source="graph", start="a", target="z"), graph)
+
+    assert result is None
