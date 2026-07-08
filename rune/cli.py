@@ -55,7 +55,13 @@ def main(argv=None):
         print(run_demo())
         return 0
 
-    print("usage: python -m rune.cli [stats|mine|demo]")
+    if argv and argv[0] == "complexity":
+        from rune.complexity import format_complexity_report
+
+        print(format_complexity_report())
+        return 0
+
+    print("usage: python -m rune.cli [stats|mine|demo|complexity]")
     return 1
 
 
