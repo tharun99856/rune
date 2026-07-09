@@ -10,6 +10,18 @@ from rune.stats import (
 
 REVIEW_THRESHOLD = 15
 
+# Concepts that crossed the review threshold and have since been resolved.
+# Kept here so `rune mine` reports their real disposition instead of stale
+# "ready to investigate". A concept is resolved by a decision recorded in
+# docs/language/decisions/DECISIONS.md, not by editing this dict alone.
+RESOLVED_CONCEPTS = {
+    "Traversal": "resolved: promoted to EXPLORE (docs/language/primitives/EXPLORE.md)",
+    "Stateful Scan": (
+        "resolved: dissolved, not a concept "
+        "(docs/language/research/2026-07-09-stateful-scan-dissolved.md)"
+    ),
+}
+
 
 def _format_mine_report(rows):
     lines = ["Concept trend (new concepts per batch):"]
@@ -26,7 +38,8 @@ def _format_mine_report(rows):
     if not queue:
         lines.append("  (none yet)")
     for entry in queue:
-        lines.append(f"  {entry['concept']} - {entry['count']} occurrences, ready to investigate")
+        status = RESOLVED_CONCEPTS.get(entry["concept"], "ready to investigate")
+        lines.append(f"  {entry['concept']} - {entry['count']} occurrences, {status}")
 
     lines.append("")
     lines.append("This is a count, not a verdict. No merges or splits are")

@@ -221,3 +221,46 @@ deliberately *not* promoted alongside this — one promotion at a time, per
 Law 9, and its internal shape (Recurrence vs. Stack vs. Pointer) is still
 unresolved. Promoting it now would have meant guessing under that
 uncertainty just to batch two decisions together.
+
+---
+
+## Stateful Scan dissolved — an implementation shape, not a concept
+
+**Category:** Research (language)
+**Status:** Accepted
+**Revisit:** If a whole-ledger sweep for objective-shaped intents (the real
+signal it surfaced) turns up something that changes the picture.
+**Maintenance Cost:** Low — a candidate removed, not machinery added.
+
+**Decision:** Stateful Scan — the single highest-frequency candidate (34
+problems) — is **not** a Rune concept and will not be promoted, as one
+concept or as the three (Recurrence/Stack/Pointer) an earlier split
+proposed. Full argument in
+`docs/language/research/2026-07-09-stateful-scan-dissolved.md`.
+
+**Reason:** Re-classified by *intent* rather than mechanism, the 34 problems
+scatter across ≥8 unrelated intent families. A single concept covering them
+would need an arbitrary user-supplied step function (a `fold`/`scanl`), which
+is precisely the closed-vocabulary escape hatch Rune's founding constraint
+forbids. So it's not one concept; and split apart, its members already belong
+to existing concepts or to a new one (objectives) now tracked separately. It
+was an implementation shape — "a pass that keeps state," which Python renders
+uniformly as `for` + a mutable variable — read as if it were an intent.
+
+**Why this is a good outcome, not a setback:** it's the exact failure mode
+the intent-over-implementation thesis predicts (the most Python-common
+pattern looks like the most important concept, precisely because it's an
+*implementation* commonality), and the evidence discipline caught it before
+it became a keyword. The genuine signal — 15+ problems stating an objective
+(max/min/count/exists) over a space — is now its own candidate
+(`objective-over-scope.md`), where DP is the compiler's technique, not the
+language's concept.
+
+**Trade-offs:** The ledger's 34 "Stateful Scan" tags are left in place as
+honest *mechanism* observations; a wholesale intent re-tag was declined as
+premature (it would mean inventing objective-concept tags before those
+concepts are defined — the fill-the-table guessing this project avoids).
+Consequence: `rune mine` will keep listing Stateful Scan at 34 until that
+re-tag happens. Acceptable, because the tool explicitly reports counts as
+"go read these," not verdicts — and the verdict now lives in the research
+journal and here.

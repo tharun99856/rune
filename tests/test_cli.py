@@ -25,6 +25,17 @@ def test_mine_command_returns_zero_and_prints_trend_and_queue(capsys):
     assert "confidence" not in captured.out.lower()
 
 
+def test_mine_marks_resolved_concepts_not_ready_to_investigate(capsys):
+    # Both Traversal (promoted to EXPLORE) and Stateful Scan (dissolved) are
+    # over the review threshold but already resolved -- the tool must not keep
+    # calling them "ready to investigate", which would be stale and misleading.
+    main(["mine"])
+    out = capsys.readouterr().out
+
+    assert "promoted" in out  # Traversal
+    assert "dissolved" in out  # Stateful Scan
+
+
 def test_demo_command_returns_zero_and_prints_the_pipeline(capsys):
     exit_code = main(["demo"])
 

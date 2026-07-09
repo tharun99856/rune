@@ -17,14 +17,17 @@ matched).
 **Reason:** `GROUP`/`COUNT`/`ORDER`/`TAKE` have no notion of a scan carrying
 forward mutable state at all, let alone a stack.
 
-**Status:** This is the 7th data point for the existing
-`docs/language/primitives/candidates/stateful-scan-or-recurrence.md`
-candidate — not a new bucket. It sharpens that candidate's already-open
-question (does "stateful scan" cover one shape or several distinct
-state-retention needs — rolling scalar, full table, and now a stack?)
-rather than resolving it.
+**Status (updated 2026-07-09):** Logged at the time as a 7th data point for
+the stateful-scan candidate. That candidate has since been **dissolved** —
+it was an implementation shape, not an intent concept (see
+`docs/language/research/2026-07-09-stateful-scan-dissolved.md`). Valid
+Parentheses' actual *intent* is "validate a nested expression," unrelated to
+the *intent* of the other problems that shared its stack mechanism. Kept here
+as an honest record of a data point that pointed at a mirage — that's what
+the log is for, not just the ones that panned out.
 
-**See:** `docs/language/research/2026-07-07-valid-parentheses.md`
+**See:** `docs/language/research/2026-07-07-valid-parentheses.md`,
+then `docs/language/research/2026-07-09-stateful-scan-dissolved.md`
 
 ---
 

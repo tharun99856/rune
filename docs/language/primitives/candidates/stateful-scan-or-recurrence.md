@@ -1,11 +1,33 @@
-# Candidate: stateful scan / recurrence (naming undecided — NOT "SCAN")
+# Candidate: stateful scan / recurrence — DISSOLVED (not a Rune concept)
 
-**Status:** Under investigation, and just split. Raw count 18 (was 19 — one
-problem, Validate BST, was mistagged; it's tree-recursion bounds propagation,
-not a linear scan, moved to Traversal). Investigated directly (cheap, no
-grammar touched) — see `docs/language/research/2026-07-08-stateful-scan-split.md`
-for the full mechanism-by-mechanism breakdown. Result: **three mechanisms,
-not one, and not four either:**
+**Status: DISSOLVED, 2026-07-09.** Not promotable — not as one concept, not
+as three. See `docs/language/research/2026-07-09-stateful-scan-dissolved.md`
+for the full argument; the short version:
+
+- Re-classified by **intent** (not mechanism, as the earlier splits did), the
+  34 tagged problems scatter across ≥8 unrelated intent families (optimize,
+  count, restructure-list, consolidate-intervals, evaluate-expression,
+  next-greater-relation, reachability, per-element-transform).
+- A single `SCAN`/`FOLD` concept covering all of them would need an arbitrary
+  user-supplied step function (`scanl :: (b -> a -> b) -> ...`) — the one
+  thing Rune's founding closed-vocabulary rule forbids. So it can't be one
+  concept without breaking the thesis.
+- As many concepts, its members already belong to other concepts (Jump Game's
+  intent is reachability = `EXPLORE`) or to a concept that doesn't exist yet
+  (objectives — now tracked as `objective-over-scope.md`).
+
+"Stateful Scan" was an *implementation shape* — "a pass that maintains state,"
+which Python expresses uniformly with `for` + a mutable variable — masquerading
+as an intent. The 34 count was pattern-frequency, never 34 votes for one
+concept. This is the productive negative result the intent-over-implementation
+thesis predicts, caught before it became a keyword.
+
+---
+
+Everything below is the earlier (superseded) mechanism-level analysis, kept
+for the record — it's how the dissolution was reached, not a live proposal.
+
+**Superseded finding — three mechanisms:**
 
 1. **Recurrence over an index space** (13 problems) — a value computed at
    each position from previously-computed values. Internally has a
