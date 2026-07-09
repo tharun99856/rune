@@ -1,9 +1,26 @@
 # Candidate: objective over a scope (naming undecided — NOT "MAXIMIZE"/"DP")
 
-**Status:** Newly surfaced 2026-07-09, by the Stateful Scan dissolution
-(`docs/language/research/2026-07-09-stateful-scan-dissolved.md`). Real
-evidence, but not yet a deliberate whole-ledger pass — treat the count below
-as a floor, not a settled number.
+**Status (updated 2026-07-09, after the whole-ledger scope-closure sweep —
+`docs/language/research/2026-07-09-objectives-scope-closure.md`):** SPLIT.
+Objectives do not close uniformly. The concept bifurcates by *scope type*,
+and only one half is a viable Rune concept:
+
+- **Objective over a STRUCTURAL scope** (~10 problems: max sum over contiguous
+  subarrays, max area over pairs, max over windows, select by rank, max tree
+  path). Scope is a nameable shape, no predicate needed → **viable, narrow
+  candidate.** Payoff: one strong new optimizer proof (Kadane O(n) vs naive
+  all-subarrays O(n²)). Several rank cases already near-`ORDER`+`TAKE`.
+- **Objective over a PREDICATE-defined scope** (~12–14 problems: Coin Change,
+  LIS, LCS, Edit Distance, Word Break, Partition, palindrome/no-repeat
+  substrings, House Robber). Scope needs an arbitrary constraint predicate
+  ("sums to X", "is increasing", "is a palindrome", "in the dictionary") →
+  **out of reach.** Expressing it needs the arbitrary-predicate escape hatch
+  the closed-vocabulary rule forbids (or one keyword per constraint = stdlib
+  zoo). This is the closed-vocabulary ceiling, not a candidate to pursue.
+
+The rest of this doc is the pre-sweep framing, kept for the record.
+
+---
 
 **Why is this being considered?**
 A large share of problems state an **objective over a defined space**: return

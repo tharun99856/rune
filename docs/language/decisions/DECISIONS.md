@@ -264,3 +264,42 @@ Consequence: `rune mine` will keep listing Stateful Scan at 34 until that
 re-tag happens. Acceptable, because the tool explicitly reports counts as
 "go read these," not verdicts — and the verdict now lives in the research
 journal and here.
+
+---
+
+## The closed-vocabulary ceiling: predicate-scoped optimization (much of DP)
+
+**Category:** Research (the honest limit of the approach)
+**Status:** Accepted (as a finding, not a resolution — see Revisit)
+**Revisit:** If anyone finds a way to name a predicate-defined scope in
+closed vocabulary. That would move the ceiling; nothing found so far does.
+**Maintenance Cost:** Low — it's a boundary written down, not machinery.
+
+**Decision / finding:** The whole-ledger objective sweep
+(`docs/language/research/2026-07-09-objectives-scope-closure.md`) shows
+objective-shaped problems split by *scope*: structural scopes (contiguous
+subarrays, windows, pairs, rank) close cleanly and are a viable narrow
+concept; predicate-defined scopes (subsets *summing to X*, *increasing*
+subsequences, *palindromic* substrings, *dictionary* segmentations) do not —
+naming them needs an arbitrary predicate, which the founding closed-vocabulary
+rule forbids. The predicate group (~12–14) outnumbers the structural (~10).
+
+**Why this matters as a project-level decision, not just a candidate note:**
+this is the first concrete evidence of *where Rune's closed-vocabulary bet
+ceilings out*. A whole class — optimization over a predicate-defined space,
+i.e. much of classic DP — appears fundamentally inexpressible in Rune without
+abandoning the property that lets its optimizer reason at all. So "solve the
+DP-heavy portion of a standard problem set in Rune" is, on current
+understanding, **not a reachable goal**, and should not be marketed or
+planned as one. Naming this ceiling now prevents chasing it as a feature and
+discovering it as a wall.
+
+**Not fatal, and worth stating both halves honestly:** Rune still cleanly
+covers grouping, aggregation, ordering, selection, traversal, and
+structural-scope objectives — a real, useful, provable slice. The ceiling
+bounds the ambition; it doesn't collapse it. (It's also arguably the most
+*interesting* thing to report about a closed-vocabulary intent language:
+precisely which problems it can and cannot express, and why.)
+
+**Trade-offs:** Deflates the "objectives" excitement — the motivating DP
+problems are the ones out of reach. Better known now.
