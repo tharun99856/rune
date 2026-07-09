@@ -184,3 +184,40 @@ key instead of the naive one). `NumbaBackend.supports()` also now only
 claims `TopK(descending=True)` — the `descending=False` case was never
 implemented correctly in the first place (a second bug the same
 investigation caught) and is honestly excluded rather than silently wrong.
+
+---
+
+## Traversal (`EXPLORE`) promoted from candidate to grammar
+
+**Category:** Architecture (language)
+**Status:** Accepted
+**Revisit:** Not planned unless `ABSTRACTION_QUESTIONS.md`'s remaining open
+half (control-flow-heavy graph algorithms, untested) turns up a real problem.
+**Maintenance Cost:** Medium — a genuinely new data shape (graphs, not flat
+sequences) and a runtime-decided strategy (BFS vs. Dijkstra), not just
+another flat keyword.
+
+**Decision:** Promote Traversal to a real keyword (`EXPLORE ... FROM ...
+[TO ...]`), making it the fifth concept in a grammar the freeze document
+said would stay at four "unless something genuinely breaks the model."
+
+**Reason:** 24 ledger problems (second only to Stateful Scan's 34) and,
+unlike Stateful Scan, no internal splitting needed — it held up as one
+concept across trees, grids, and graphs. It also unlocked a second,
+structurally different optimizer proof (a runtime data-dependent decision,
+not a compile-time syntax rewrite), which is what made it worth promoting
+on its own rather than batching it with a future round.
+
+**Process gap, logged honestly:** this promotion happened without writing
+this entry or updating `V0.1_FREEZE.md`/`grammar/current.md` at the time —
+both documents said "four concepts" for several commits after a fifth
+existed. Caught and fixed once the repo went public and the inconsistency
+mattered enough to look for. The lesson, not just the fix: "explain your
+reasoning" has to include updating the documents that claim to be current,
+not only writing new ones.
+
+**Trade-offs:** Stateful Scan (34 problems, higher raw pressure) was
+deliberately *not* promoted alongside this — one promotion at a time, per
+Law 9, and its internal shape (Recurrence vs. Stack vs. Pointer) is still
+unresolved. Promoting it now would have meant guessing under that
+uncertainty just to batch two decisions together.

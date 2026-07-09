@@ -18,21 +18,23 @@ concept-per-line, each-line-transforms-the-last shape itself doesn't fit how
 the category's algorithms are structured — that's the language's model being
 wrong for that category, not a missing word in it.
 
-## Category currently closest to worth watching
+## Resolved (partially): Graph / grid traversal
 
-**Graph / grid traversal**
-(`docs/language/primitives/candidates/graph-traversal.md`). Reasoning, laid
-out honestly rather than concluded: traversal is a frontier-expansion
-process, not an up-front "transform the whole collection" step, which is
-what every current concept does. It's an open question whether that's just a
-new *concept* (`EXPLORE` still fits the pipeline shape fine as a single step —
-"traverse, then hand the result to the next line") or whether real graph
-algorithms need control flow (conditional branching mid-traversal, revisits,
-early termination) that resists being expressed as one line at all.
+Was the closest-watched category here; downgraded from "watching" because
+promotion produced real evidence, not just more problem count. `EXPLORE`
+(`docs/language/primitives/EXPLORE.md`) was implemented as a single pipeline
+step — reachability and shortest-path-to-target both fit "traverse, then
+hand the result to the next line" without needing any control-flow escape
+hatch. That's a real, positive answer to the "does it fit as one line"
+half of the original open question.
 
-**Current evidence: 11 problems** (updated after the 2026-07-08 batch — was
-2). Still tagged 🧩, not ❌ — the ~20-problem threshold is closer than any
-other category but not crossed. Continue watching; still not deciding.
+**Still open, and now sharper:** only reachability/shortest-path was tested.
+Whether *other* graph algorithms need mid-traversal branching, revisits, or
+early termination that resists one-line expression is untested, not
+answered. The category isn't fully cleared — it's downgraded from "closest
+to a ❌ finding" to "the ✅/🧩 half is settled, the harder cases are
+unexplored," which is a different and more precise state than either
+"resolved" or "still watching for a wrong-abstraction verdict."
 
 ## Other categories opened, both far earlier stage
 
