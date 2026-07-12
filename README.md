@@ -1,5 +1,7 @@
 # Rune
 
+[![tests](https://github.com/tharun99856/rune/actions/workflows/ci.yml/badge.svg)](https://github.com/tharun99856/rune/actions/workflows/ci.yml)
+
 **You describe the algorithm. The compiler chooses the implementation — and
 proves it correct.**
 
