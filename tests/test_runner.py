@@ -1,4 +1,4 @@
-from rune.model import Count, Explore, Group, Order, Take
+from rune.model import Count, Explore, Group, Objective, Order, Take
 from rune.optimizer import TopK
 from rune.runner import (
     CountedBucket,
@@ -198,3 +198,32 @@ def test_run_step_uses_dijkstra_automatically_for_weighted_graphs():
     result = run_step(Explore(source="graph", start="a", target="b"), _WEIGHTED_GRAPH)
 
     assert result == 2
+
+
+def test_maximize_sum_contiguous_classic_kadane_case():
+    nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+    step = Objective(direction="maximize", measure="sum", scope="contiguous", source="nums")
+
+    result = run_step(step, nums)
+
+    assert result == 6  # subarray [4, -1, 2, 1]
+
+
+def test_maximize_sum_contiguous_all_negative_returns_largest_single():
+    nums = [-3, -1, -2]
+    step = Objective(direction="maximize", measure="sum", scope="contiguous", source="nums")
+
+    assert run_step(step, nums) == -1
+
+
+def test_minimize_sum_contiguous():
+    nums = [3, -2, 5, -1, -4, 2]
+    step = Objective(direction="minimize", measure="sum", scope="contiguous", source="nums")
+
+    assert run_step(step, nums) == -5  # subarray [-1, -4]
+
+
+def test_objective_on_empty_returns_none():
+    step = Objective(direction="maximize", measure="sum", scope="contiguous", source="nums")
+
+    assert run_step(step, []) is None

@@ -2,7 +2,7 @@ import heapq
 from collections import deque
 from dataclasses import dataclass
 
-from rune.model import Count, Explore, Group, Order, Take
+from rune.model import Count, Explore, Group, Objective, Order, Take
 from rune.optimizer import TopK
 
 
@@ -35,6 +35,32 @@ def _dijkstra(graph, start):
 
 def _is_weighted(graph):
     return any(weight != 1 for edges in graph.values() for _neighbor, weight in edges)
+
+
+def _better(candidate, best, direction):
+    if best is None:
+        return True
+    return candidate > best if direction == "maximize" else candidate < best
+
+
+def _objective_contiguous_naive(nums, direction, measure):
+    # Baseline: examine every contiguous subarray. O(n^2) with a running sum.
+    # This is the honest "check all candidates" implementation the optimizer
+    # replaces -- not how you'd write it by hand, but what "maximize sum over
+    # contiguous" literally means before any algorithmic insight.
+    if measure != "sum":
+        raise ValueError(f"unsupported objective measure: {measure!r}")
+    if not nums:
+        return None
+    best = None
+    n = len(nums)
+    for i in range(n):
+        running = 0
+        for j in range(i, n):
+            running += nums[j]
+            if _better(running, best, direction):
+                best = running
+    return best
 
 
 @dataclass(frozen=True)
@@ -131,6 +157,10 @@ def run_step(step, current):
         if step.target is None:
             return distances
         return distances.get(step.target)
+    if isinstance(step, Objective):
+        if step.scope != "contiguous":
+            raise ValueError(f"unsupported objective scope: {step.scope!r}")
+        return _objective_contiguous_naive(current, step.direction, step.measure)
     raise ValueError(f"unsupported step: {step!r}")
 
 
