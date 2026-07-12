@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rune playground</title>
+<style>
+  :root {
+    --bg:#0f1117; --panel:#171a23; --panel2:#1e222d; --ink:#e6e9ef; --dim:#9aa4b2;
+    --line:#2a2f3a; --accent:#7c9cff; --good:#3fb950; --bad:#f85149; --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+  }
+  header { padding:28px 20px 8px; max-width:920px; margin:0 auto; }
+  h1 { margin:0; font-size:26px; letter-spacing:-.02em; }
+  .tag { color:var(--dim); margin:6px 0 0; font-size:15px; }
+  .tag b { color:var(--ink); font-weight:600; }
+  main { max-width:920px; margin:0 auto; padding:16px 20px 60px; }
+  .examples { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 18px; }
+  .examples button {
+    background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+    padding:7px 12px; border-radius:8px; font-size:13px; cursor:pointer;
+  }
+  .examples button:hover { border-color:var(--accent); }
+  .grid { display:grid; grid-template-columns:1fr; gap:16px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .card h2 { margin:0; font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--dim);
+             padding:12px 14px; border-bottom:1px solid var(--line); }
+  textarea {
+    width:100%; border:0; background:transparent; color:var(--ink); font-family:var(--mono);
+    font-size:14px; padding:14px; resize:vertical; outline:none;
+  }
+  #prog { min-height:130px; } #data { min-height:56px; }
+  .run { display:flex; align-items:center; gap:14px; margin:6px 0 20px; }
+  .run button {
+    background:var(--accent); color:#0b1020; border:0; padding:11px 22px; border-radius:9px;
+    font-size:15px; font-weight:600; cursor:pointer;
+  }
+  .run button:disabled { opacity:.5; cursor:progress; }
+  .status { color:var(--dim); font-size:13px; }
+  #out { display:none; }
+  .verdict { font-weight:600; padding:12px 14px; border-bottom:1px solid var(--line); }
+  .verdict.ok { color:var(--good); } .verdict.bad { color:var(--bad); }
+  .body { padding:14px; }
+  .choice { background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:0 0 12px; }
+  .choice .lo { color:var(--dim); font-family:var(--mono); font-size:13px; }
+  .choice .hi { font-family:var(--mono); font-size:14px; margin:2px 0; color:var(--accent); }
+  .choice .why { color:var(--dim); font-size:13px; }
+  .result { font-family:var(--mono); font-size:14px; background:var(--panel2); border:1px solid var(--line);
+            border-radius:8px; padding:10px 12px; white-space:pre-wrap; }
+  .err { font-family:var(--mono); font-size:13.5px; color:var(--bad); white-space:pre-wrap; }
+  code { font-family:var(--mono); background:var(--panel2); padding:1px 5px; border-radius:5px; }
+  footer { color:var(--dim); font-size:13px; text-align:center; padding:10px 20px 40px; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Rune <span style="color:var(--dim);font-weight:400;font-size:18px">playground</span></h1>
+  <p class="tag">You describe the algorithm. <b>The compiler chooses the implementation, and proves it.</b>
+     Running the real Rune optimizer, as Python, right here in your browser.</p>
+</header>
+<main>
+  <div class="examples">
+    <button data-ex="topk">Top-K frequent</button>
+    <button data-ex="kadane">Max subarray</button>
+    <button data-ex="path">Shortest path</button>
+    <button data-ex="bad">Invalid (watch it reject)</button>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Rune program: say what you want</h2>
+      <textarea id="prog" spellcheck="false"></textarea>
+    </div>
+    <div class="card">
+      <h2>Sample data (optional Python literal) to actually run it</h2>
+      <textarea id="data" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <div class="run">
+    <button id="go" disabled>Analyze</button>
+    <span class="status" id="status">Loading Rune (Python in your browser)…</span>
+  </div>
+
+  <div class="card" id="out">
+    <div class="verdict" id="verdict"></div>
+    <div class="body" id="body"></div>
+  </div>
+</main>
+<footer>
+  Rune runs entirely in your browser via <a href="https://pyodide.org">Pyodide</a>. No server, no install.
+  &nbsp;·&nbsp; <a href="https://github.com/tharun99856/rune">source on GitHub</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script>
+const EXAMPLES = {
+  topk:   { prog:"GROUP nums BY value\nCOUNT EACH group\nORDER BY count DESC\nTAKE 3", data:"[1, 1, 1, 2, 2, 3, 4, 4, 4, 4]" },
+  kadane: { prog:"MAXIMIZE SUM OVER CONTIGUOUS nums", data:"[-2, 1, -3, 4, -1, 2, 1, -5, 4]" },
+  path:   { prog:"EXPLORE graph FROM a",
+            data:'{"a": [["b", 5], ["c", 1]], "b": [["d", 1]], "c": [["b", 1], ["d", 10]], "d": []}' },
+  bad:    { prog:"FILTER nums WHERE age > 18", data:"[1, 2, 3]" },
+};
+const RUNE_FILES = ["__init__.py","lexer.py","model.py","parser.py","optimizer.py","runner.py","verify.py"];
+
+const $ = id => document.getElementById(id);
+function setExample(k){ $("prog").value = EXAMPLES[k].prog; $("data").value = EXAMPLES[k].data; }
+document.querySelectorAll(".examples button").forEach(b => b.onclick = () => setExample(b.dataset.ex));
+setExample("topk");
+
+const ANALYZE_PY = `
+import ast, json
+from rune.parser import parse_program
+from rune.optimizer import optimize
+from rune.runner import run_program, explore_with_explanation, CountedBucket
+from rune.model import Explore
+
+def _fmt(r):
+    if isinstance(r, list):
+        return "[" + ", ".join(_fmt(x) for x in r) + "]"
+    if isinstance(r, CountedBucket):
+        return f"({r.key!r}: {r.count})"
+    if isinstance(r, dict):
+        return "{" + ", ".join(f"{k!r}: {v}" for k, v in r.items()) + "}"
+    return repr(r)
+
+def analyze(source, data_text):
+    try:
+        graph = parse_program(source)
+    except Exception as e:
+        return json.dumps({"ok": False, "error": str(e)})
+    optimized, exps = optimize(graph.steps)
+    choices = [{"before": e.before, "after": e.after, "reason": e.reason} for e in exps]
+    result = None
+    data_text = (data_text or "").strip()
+    if data_text:
+        try:
+            data = ast.literal_eval(data_text)
+        except Exception as e:
+            return json.dumps({"ok": True, "choices": choices, "result": None,
+                               "data_error": f"couldn't read sample data: {e}"})
+        try:
+            # EXPLORE picks BFS vs Dijkstra at runtime from the data, not from
+            # syntax -- surface that choice, since it's the whole point.
+            if len(optimized) == 1 and isinstance(optimized[0], Explore):
+                res, exp = explore_with_explanation(optimized[0], data)
+                choices.append({"before": "EXPLORE (strategy decided from the data)",
+                                "after": exp.strategy, "reason": exp.reason})
+                result = _fmt(res)
+            else:
+                result = _fmt(run_program(optimized, data))
+        except Exception as e:
+            result = f"runtime error: {e}"
+    return json.dumps({"ok": True, "choices": choices, "result": result})
+`;
+
+let pyodide;
+async function boot(){
+  pyodide = await loadPyodide();
+  // fetch the real rune core (same origin) and write it into Pyodide's FS
+  pyodide.FS.mkdirTree("rune");
+  await Promise.all(RUNE_FILES.map(async f => {
+    const r = await fetch("rune/" + f);
+    if(!r.ok) throw new Error("could not load rune/" + f + " (" + r.status + ")");
+    pyodide.FS.writeFile("rune/" + f, await r.text());
+  }));
+  pyodide.runPython("import sys; sys.path.insert(0, '.')");
+  pyodide.runPython(ANALYZE_PY);
+  $("status").textContent = "Ready. Using the real Rune optimizer.";
+  $("go").disabled = false;
+}
+
+function render(res){
+  const out = $("out"), verdict = $("verdict"), body = $("body");
+  out.style.display = "block";
+  if(!res.ok){
+    verdict.className = "verdict bad";
+    verdict.textContent = "✗ REJECTED: not a valid Rune program";
+    body.innerHTML = '<div class="err">' + escapeHtml(res.error) + '</div>' +
+      '<p style="color:var(--dim);font-size:13px;margin:12px 0 0">That is the point: the compiler is the source of truth. It will not silently accept a program it cannot understand, which is exactly how it catches an LLM\'s hallucinations.</p>';
+    return;
+  }
+  verdict.className = "verdict ok";
+  verdict.textContent = "✓ VALID RUNE: parsed and optimized";
+  let html = "";
+  if(res.choices.length === 0){
+    html += '<p style="color:var(--dim);margin:0 0 12px">No rewrite needed for this program (it is already the direct plan).</p>';
+  } else {
+    html += '<p style="color:var(--dim);margin:0 0 12px;font-size:13px">The compiler recognized the intent and chose an algorithm:</p>';
+    for(const c of res.choices){
+      html += '<div class="choice"><div class="lo">'+escapeHtml(c.before)+'</div>'+
+              '<div class="hi">→ '+escapeHtml(c.after)+'</div>'+
+              '<div class="why">'+escapeHtml(c.reason)+'</div></div>';
+    }
+  }
+  if(res.data_error){ html += '<div class="err">'+escapeHtml(res.data_error)+'</div>'; }
+  else if(res.result !== null && res.result !== undefined){
+    html += '<p style="color:var(--dim);margin:6px 0 6px;font-size:13px">Result on your data:</p>';
+    html += '<div class="result">'+escapeHtml(res.result)+'</div>';
+  }
+  body.innerHTML = html;
+}
+function escapeHtml(s){ return String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+$("go").onclick = () => {
+  pyodide.globals.set("SRC", $("prog").value);
+  pyodide.globals.set("DATA", $("data").value);
+  const res = JSON.parse(pyodide.runPython("analyze(SRC, DATA)"));
+  render(res);
+};
+
+boot().catch(e => { $("status").textContent = "Failed to load: " + e.message; });
+</script>
+</body>
+</html>
