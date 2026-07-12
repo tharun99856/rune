@@ -3,7 +3,7 @@ from collections import deque
 from dataclasses import dataclass
 
 from rune.model import Count, Explore, Group, Objective, Order, Take
-from rune.optimizer import TopK
+from rune.optimizer import KadaneScan, TopK
 
 
 def _bfs(graph, start):
@@ -161,6 +161,17 @@ def run_step(step, current):
         if step.scope != "contiguous":
             raise ValueError(f"unsupported objective scope: {step.scope!r}")
         return _objective_contiguous_naive(current, step.direction, step.measure)
+    if isinstance(step, KadaneScan):
+        # O(n): the best subarray ending here is either just this element, or
+        # this element extending the best subarray ending at the previous one.
+        if not current:
+            return None
+        pick = max if step.direction == "maximize" else min
+        best = running = current[0]
+        for x in current[1:]:
+            running = pick(x, running + x)
+            best = pick(best, running)
+        return best
     raise ValueError(f"unsupported step: {step!r}")
 
 

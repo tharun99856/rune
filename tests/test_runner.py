@@ -227,3 +227,23 @@ def test_objective_on_empty_returns_none():
     step = Objective(direction="maximize", measure="sum", scope="contiguous", source="nums")
 
     assert run_step(step, []) is None
+
+
+def test_kadane_scan_matches_naive_on_classic_case():
+    from rune.optimizer import KadaneScan
+
+    nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+    naive = run_step(
+        Objective(direction="maximize", measure="sum", scope="contiguous", source="nums"), nums
+    )
+    kadane = run_step(KadaneScan(direction="maximize"), nums)
+
+    assert kadane == naive == 6
+
+
+def test_kadane_scan_minimize_and_all_negative_and_empty():
+    from rune.optimizer import KadaneScan
+
+    assert run_step(KadaneScan(direction="minimize"), [3, -2, 5, -1, -4, 2]) == -5
+    assert run_step(KadaneScan(direction="maximize"), [-3, -1, -2]) == -1
+    assert run_step(KadaneScan(direction="maximize"), []) is None
