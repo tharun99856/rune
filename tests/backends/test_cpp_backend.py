@@ -57,3 +57,37 @@ def test_cpp_backend_handles_all_negative_minimize_and_empty():
     assert CppBackend().run([KadaneScan(direction="maximize")], [-3, -1, -2]) == -1
     assert CppBackend().run([KadaneScan(direction="minimize")], [3, -2, 5, -1, -4, 2]) == -5
     assert CppBackend().run([KadaneScan(direction="maximize")], []) is None
+
+
+def _topk_plan(k=3):
+    from rune.optimizer import optimize
+    from rune.parser import parse_program
+
+    graph = parse_program(f"GROUP nums BY value\nCOUNT EACH group\nORDER BY count DESC\nTAKE {k}")
+    optimized, _ = optimize(graph.steps)
+    return optimized  # [Group, Count, TopK]
+
+
+def test_emit_cpp_generates_topk_plan():
+    src = emit_cpp(_topk_plan(3))
+    assert "int main" in src
+    assert "sort" in src  # top-k selection needs ordering by count
+
+
+def test_cpp_backend_supports_the_topk_plan():
+    assert CppBackend().supports(_topk_plan(3)) is True
+
+
+@requires_zig
+def test_cpp_topk_matches_interpreter_including_tie_break():
+    from rune.runner import run_program
+
+    # data with a deliberate count tie (2 and 7 both appear 3 times) so the
+    # tie-break (count desc, key asc) actually matters and C++ must match it.
+    data = [5, 5, 5, 5, 9, 9, 9, 2, 2, 2, 7, 7, 7, 1]
+    plan = _topk_plan(3)
+
+    interp = [(b.key, b.count) for b in run_program(plan, data)]
+    cpp = [(b.key, b.count) for b in CppBackend().run(plan, data)]
+
+    assert cpp == interp
