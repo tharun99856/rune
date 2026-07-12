@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from rune.model import Order, Take
+from rune.model import Objective, Order, Take
 
 
 @dataclass(frozen=True)
@@ -8,6 +8,11 @@ class TopK:
     key: str
     descending: bool
     count: int
+
+
+@dataclass(frozen=True)
+class KadaneScan:
+    direction: str  # "maximize" | "minimize"
 
 
 @dataclass(frozen=True)
@@ -40,6 +45,22 @@ def optimize(steps):
                 )
             )
             i += 2
+        elif isinstance(step, Objective) and step.measure == "sum" and step.scope == "contiguous":
+            new_steps.append(KadaneScan(direction=step.direction))
+            explanations.append(
+                RewriteExplanation(
+                    rule="OBJECTIVE_CONTIGUOUS_TO_KADANE",
+                    before=f"{step.direction.upper()} SUM OVER CONTIGUOUS {step.source}",
+                    after=f"KADANE({step.direction}) -- O(n) single pass",
+                    reason=(
+                        "Objective is the best sum over contiguous subarrays; optimal "
+                        "substructure means the best subarray ending at each position "
+                        "extends the best one ending just before it, so a single pass "
+                        "(Kadane's) replaces checking all O(n^2) subarrays."
+                    ),
+                )
+            )
+            i += 1
         else:
             new_steps.append(step)
             i += 1

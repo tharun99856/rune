@@ -1,5 +1,5 @@
-from rune.model import Count, Group, Order, Take
-from rune.optimizer import TopK, optimize
+from rune.model import Count, Group, Objective, Order, Take
+from rune.optimizer import KadaneScan, TopK, optimize
 
 
 def test_order_take_adjacent_pair_rewrites_to_top_k():
@@ -46,4 +46,28 @@ def test_order_without_a_following_take_is_not_rewritten():
     new_steps, explanations = optimize(steps)
 
     assert new_steps == [Order(key="count", descending=True)]
+    assert explanations == []
+
+
+def test_maximize_sum_contiguous_rewrites_to_kadane_with_explanation():
+    steps = [Objective(direction="maximize", measure="sum", scope="contiguous", source="nums")]
+
+    new_steps, explanations = optimize(steps)
+
+    assert new_steps == [KadaneScan(direction="maximize")]
+    assert len(explanations) == 1
+    exp = explanations[0]
+    assert exp.rule == "OBJECTIVE_CONTIGUOUS_TO_KADANE"
+    assert "O(n)" in exp.after or "single pass" in exp.reason.lower()
+    assert "subarray" in exp.reason.lower()
+
+
+def test_objective_with_non_contiguous_scope_is_not_rewritten():
+    # Only the contiguous scope has the Kadane rewrite. A different scope must
+    # pass through untouched, not get silently mis-optimized.
+    steps = [Objective(direction="maximize", measure="sum", scope="pairs", source="nums")]
+
+    new_steps, explanations = optimize(steps)
+
+    assert new_steps == steps
     assert explanations == []
