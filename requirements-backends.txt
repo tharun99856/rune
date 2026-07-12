@@ -1,6 +1,14 @@
-# Optional. Only needed for rune.backends.numba_backend.
+# Optional. Only needed for the compiled backends.
 # The parser, optimizer, and InterpreterBackend have zero dependencies
 # beyond the standard library -- this file exists so that stays true,
-# and so a missing C++/Rust/LLVM toolchain never blocks core Rune work.
+# and so a missing toolchain never blocks core Rune work.
+
+# numba: LLVM-JIT backend (rune.backends.numba_backend)
 numba
 numpy
+
+# ziglang: a self-contained clang/C++ toolchain (no system compiler needed),
+# used by rune.backends.cpp_backend to compile a Rune plan to a native
+# executable. Verified ~5x over the Python interpreter on Kadane at N=5M,
+# same algorithm and result.
+ziglang
