@@ -92,7 +92,36 @@ def main(argv=None):
         print(format_verification_demo())
         return 0
 
-    print("usage: python -m rune.cli [stats|mine|demo|complexity|explain|proofs|verify]")
+    if argv and argv[0] == "ai":
+        task = " ".join(argv[1:]).strip()
+        if not task:
+            print('usage: python -m rune.cli ai "<plain-English task>"')
+            print("(needs GROQ_API_KEY set in your environment)")
+            return 1
+        from rune.ai import english_to_verified_rune
+
+        try:
+            source, result = english_to_verified_rune(task)
+        except Exception as e:  # noqa: BLE001 - surface any LLM/network error plainly
+            print(f"LLM call failed: {e}")
+            print("(needs GROQ_API_KEY set, and network access to Groq)")
+            return 1
+
+        print(f'You asked (English): "{task}"')
+        print("LLM proposed this Rune:")
+        for line in source.splitlines():
+            print(f"    {line}")
+        if result.status == "verified":
+            print(f"Rune verdict: VERIFIED -- {result.reason}")
+        elif result.status == "parsed_only":
+            print("Rune verdict: VALID RUNE (parses & optimizes; pass test data to prove behavior)")
+        else:
+            print(f"Rune verdict: REJECTED at [{result.stage}] -- {result.reason}")
+        for c in result.algorithm_choices:
+            print(f"    compiler would choose: {c.split('  (')[0]}")
+        return 0
+
+    print("usage: python -m rune.cli [stats|mine|demo|complexity|explain|proofs|verify|ai]")
     return 1
 
 

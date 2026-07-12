@@ -63,3 +63,13 @@ def test_verify_command_shows_verified_and_rejected(capsys):
     assert exit_code == 0
     assert "VERIFIED" in captured.out
     assert "REJECTED" in captured.out
+
+
+def test_ai_command_without_a_task_prints_usage(capsys):
+    # no network: the no-argument path must fail fast with a helpful message
+    exit_code = main(["ai"])
+
+    captured = capsys.readouterr()
+    assert exit_code != 0
+    assert "usage" in captured.out.lower()
+    assert "GROQ_API_KEY" in captured.out
