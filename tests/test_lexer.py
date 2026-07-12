@@ -29,3 +29,15 @@ def test_tokenizes_explore_from_to_line():
         Token("KEYWORD", "TO"),
         Token("IDENT", "b"),
     ]
+
+
+def test_tokenizes_maximize_objective_line():
+    tokens = tokenize("MAXIMIZE SUM OVER CONTIGUOUS nums")
+
+    assert tokens == [
+        Token("KEYWORD", "MAXIMIZE"),
+        Token("KEYWORD", "SUM"),
+        Token("KEYWORD", "OVER"),
+        Token("KEYWORD", "CONTIGUOUS"),
+        Token("IDENT", "nums"),
+    ]

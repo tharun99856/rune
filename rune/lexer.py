@@ -3,6 +3,7 @@ from dataclasses import dataclass
 KEYWORDS = {
     "GROUP", "BY", "COUNT", "EACH", "ORDER", "ASC", "DESC", "TAKE",
     "EXPLORE", "FROM", "TO",
+    "MAXIMIZE", "MINIMIZE", "SUM", "OVER", "CONTIGUOUS",
 }
 
 
