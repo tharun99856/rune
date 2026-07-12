@@ -65,10 +65,14 @@ already exists; a language that proves your algorithm choice does not.
 
 Six concepts, frozen and evidence-driven (`GROUP`, `COUNT`, `ORDER`, `TAKE`,
 `EXPLORE`, `MAXIMIZE`/`MINIMIZE`) — each earned by testing against 100 real
-problems, not decreed. Three optimizer proofs. Two execution backends behind a
-common interface (a reference Python interpreter, and a real LLVM-compiled
-path via Numba). ~76 tests. See `docs/language/V0.1_FREEZE.md` for how the
-vocabulary was frozen and what got promoted since.
+problems, not decreed. Three optimizer proofs, and **all three now compile to
+native C++** — the optimized plan is generated as C++, compiled with a real
+clang toolchain (`zig`, no system compiler needed), run, and verified equal to
+the reference interpreter. Backends sit behind a common interface (Python
+interpreter, LLVM-JIT via Numba, native C++). Measured ~5x native over
+interpreted on Kadane at 5M elements, same answer. ~87 tests, including ones
+that compile and run real C++ on every run. See `docs/language/V0.1_FREEZE.md`
+for how the vocabulary was frozen and what got promoted since.
 
 ## Documentation
 

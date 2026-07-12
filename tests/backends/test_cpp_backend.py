@@ -91,3 +91,44 @@ def test_cpp_topk_matches_interpreter_including_tie_break():
     cpp = [(b.key, b.count) for b in CppBackend().run(plan, data)]
 
     assert cpp == interp
+
+
+_UNWEIGHTED = {"a": [("b", 1), ("c", 1)], "b": [("d", 1)], "c": [("d", 1)], "d": [], "e": []}
+_WEIGHTED = {"a": [("b", 5), ("c", 1)], "b": [("d", 1)], "c": [("b", 1), ("d", 10)], "d": []}
+
+
+def test_emit_cpp_generates_explore_plan():
+    from rune.model import Explore
+
+    src = emit_cpp([Explore(source="graph", start="a", target=None)])
+    assert "int main" in src
+    assert "priority_queue" in src  # Dijkstra path
+    assert "queue" in src  # BFS path
+
+
+def test_cpp_backend_supports_explore_distances_but_not_target_form():
+    from rune.model import Explore
+
+    assert CppBackend().supports([Explore(source="graph", start="a", target=None)]) is True
+    # target form returns a scalar, not a distance map -- not compiled (honest)
+    assert CppBackend().supports([Explore(source="graph", start="a", target="d")]) is False
+
+
+@requires_zig
+def test_cpp_explore_matches_interpreter_bfs_on_unweighted():
+    from rune.model import Explore
+    from rune.runner import run_step
+
+    step = Explore(source="graph", start="a", target=None)
+    assert CppBackend().run([step], _UNWEIGHTED) == run_step(step, _UNWEIGHTED)
+
+
+@requires_zig
+def test_cpp_explore_matches_interpreter_dijkstra_on_weighted():
+    from rune.model import Explore
+    from rune.runner import run_step
+
+    step = Explore(source="graph", start="a", target=None)
+    cpp = CppBackend().run([step], _WEIGHTED)
+    interp = run_step(step, _WEIGHTED)
+    assert cpp == interp == {"a": 0, "c": 1, "b": 2, "d": 3}
