@@ -43,3 +43,14 @@ def test_demo_command_returns_zero_and_prints_the_pipeline(capsys):
     assert exit_code == 0
     assert "Rewrote:" in captured.out
     assert "MISMATCH" not in captured.out
+
+
+def test_proofs_command_shows_all_three_and_returns_zero(capsys):
+    exit_code = main(["proofs"])
+
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "TOP_K" in captured.out
+    assert "Dijkstra" in captured.out
+    assert "KADANE" in captured.out or "Kadane" in captured.out
+    assert "MISMATCH" not in captured.out

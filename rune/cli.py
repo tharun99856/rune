@@ -80,7 +80,13 @@ def main(argv=None):
         print(format_explain_report())
         return 0
 
-    print("usage: python -m rune.cli [stats|mine|demo|complexity|explain]")
+    if argv and argv[0] == "proofs":
+        from rune.proofs import format_proofs_report
+
+        print(format_proofs_report())
+        return 0
+
+    print("usage: python -m rune.cli [stats|mine|demo|complexity|explain|proofs]")
     return 1
 
 

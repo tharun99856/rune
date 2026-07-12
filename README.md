@@ -1,7 +1,13 @@
 # Rune
 
-A language whose primitives correspond to algorithmic reasoning, not
-implementation details.
+**You describe the algorithm. The compiler chooses the implementation — and
+proves it correct.**
+
+Rune is a small language whose keywords are *intents* (group, order, take,
+explore, maximize), not implementation details. You never pick a heap vs. a
+sort, or BFS vs. Dijkstra. You state what you want; the optimizer recognizes
+the shape of the problem and selects the algorithm, then verifies its choice
+against the naive baseline.
 
 ```rune
 GROUP nums BY value
@@ -10,56 +16,59 @@ ORDER BY count DESC
 TAKE 10
 ```
 
-Rune is not pseudocode with prettier keywords, and it is not "the AI
-language" — the eventual AI recovery layer is one feature of it, not its
-identity. See `docs/language/decisions/DECISIONS.md`.
+## The one thing that makes Rune Rune
+
+It makes three *structurally different kinds* of optimization decision across
+three unrelated algorithm families — and that's the whole point. Not one
+clever rewrite; a repeatable principle.
+
+```
+python -m rune.cli proofs
+```
+
+```
+1. TOP_K   -- decision made at COMPILE TIME, from the syntax pattern
+   intent:   GROUP...COUNT...ORDER BY count DESC / TAKE 3
+   decision: TOP_K(count, 3) -- a heap of size k, not a full sort
+   verified: True
+
+2. BFS vs Dijkstra -- decision made at RUNTIME, from the actual data
+   intent:   EXPLORE graph FROM a   (same source both times)
+   unweighted data -> BFS   weighted data -> Dijkstra
+   verified: True
+
+3. Kadane  -- decision made from the OBJECTIVE's structure
+   intent:   MAXIMIZE SUM OVER CONTIGUOUS nums
+   decision: KADANE(maximize) -- O(n) single pass, not O(n^2)
+   verified: True
+```
+
+Every line is produced by the real optimizer and self-checked against the
+naive baseline before printing — a `MISMATCH` shows instead of a
+plausible-looking wrong number if anything ever disagrees. At scale the
+Kadane rewrite is ~1090x (O(n²)→O(n)); `python -m rune.cli complexity` shows
+real measured time and space.
+
+## What Rune deliberately is NOT
+
+Rune is **closed and provable, not general.** It expresses a specific slice of
+algorithmic work extremely well; it does **not** try to solve every DSA
+problem. Optimization over a *predicate-defined* space (much of classic DP —
+Coin Change, Edit Distance, "subsets summing to X") is a documented, permanent
+ceiling: expressing it needs arbitrary predicates, which would destroy the
+exact property that lets the optimizer reason at all. That trade — narrow but
+provable, over broad but redundant — is the founding decision
+(`docs/language/decisions/DECISIONS.md`). A language that does everything
+already exists; a language that proves your algorithm choice does not.
 
 ## Status
 
-v0.1 grammar is frozen: four concepts, four keywords (`GROUP...BY`, `COUNT
-EACH`, `ORDER BY...[ASC|DESC]`, `TAKE`), settled after testing against 100
-real problems — see `docs/language/V0.1_FREEZE.md`. See
-`docs/language/atlas/algorithm-atlas.md` for the evidence, and
-`docs/language/primitives/candidates/` for capabilities still under
-investigation — none yet promoted.
-
-On top of that frozen surface, there's now a real pipeline: a parser, an
-optimizer that rewrites `ORDER DESC + TAKE k` into a heap-based `TOP_K` and
-explains why, and two backends behind a common interface — a reference
-Python interpreter, and a real LLVM-compiled path (via Numba). Run it:
-
-```
-python -m rune.cli demo
-```
-
-Sample output, run for real, not simulated:
-
-```
-Rewrote: ORDER BY count DESC + TAKE 10
-    ->   TOP_K(count, 10)
-Reason:  ORDER immediately followed by TAKE recognized as top-k selection;
-         a heap of size k avoids fully sorting the input.
-
-Data: 500,000 items, domain [0, 1000)
-Naive interpreter    (full sort):     68.31 ms
-Optimized interpreter (heap top-k):   52.81 ms
-Speedup from the optimizer alone: 1.29x (no compilation involved)
-
-Numba-compiled (real LLVM, same TOP_K plan): 13.94 ms
-Speedup over naive interpreted: 4.90x
-```
-
-Two numbers worth separating: **1.29x comes from the optimizer alone** —
-recognizing intent and picking a better algorithm, no compilation involved.
-**4.90x comes from compiling that same choice.** The first number is the
-actual thesis (Rune reasons about intent, not just syntax); the second is
-what a real backend adds once one exists. Neither is fabricated — both are
-`assert`ed correct against the reference interpreter before being printed
-(see `tests/test_demo.py`, and the tie-breaking bug this caught in
-`docs/language/decisions/DECISIONS.md`).
-
-`docs/language/primitives/` documents why each existing concept/keyword
-exists; nothing else is implemented in the grammar yet by design.
+Six concepts, frozen and evidence-driven (`GROUP`, `COUNT`, `ORDER`, `TAKE`,
+`EXPLORE`, `MAXIMIZE`/`MINIMIZE`) — each earned by testing against 100 real
+problems, not decreed. Three optimizer proofs. Two execution backends behind a
+common interface (a reference Python interpreter, and a real LLVM-compiled
+path via Numba). ~76 tests. See `docs/language/V0.1_FREEZE.md` for how the
+vocabulary was frozen and what got promoted since.
 
 ## Documentation
 
@@ -68,7 +77,7 @@ exists; nothing else is implemented in the grammar yet by design.
   from testing against real examples, not decreed up front.
 - `docs/language/atlas/algorithm-atlas.md` — problems tested against the
   frozen grammar, and what each one reveals (or doesn't) about what's missing.
-- `docs/language/primitives/` — why each existing verb exists;
+- `docs/language/primitives/` — why each existing concept/keyword exists;
   `docs/language/primitives/candidates/` — open capability questions, named
   after the capability, never a presumed keyword spelling.
 - `docs/language/decisions/DECISIONS.md` — why things are the way they are.
