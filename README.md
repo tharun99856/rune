@@ -2,6 +2,9 @@
 
 [![tests](https://github.com/tharun99856/rune/actions/workflows/ci.yml/badge.svg)](https://github.com/tharun99856/rune/actions/workflows/ci.yml)
 
+**▶ Try it in your browser: https://tharun99856.github.io/rune/** — the real
+optimizer, running as Python via Pyodide, no install.
+
 **You describe the algorithm. The compiler chooses the implementation — and
 proves it correct.**
 
