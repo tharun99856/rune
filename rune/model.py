@@ -31,7 +31,15 @@ class Explore:
     target: Optional[str] = None
 
 
-Step = Union[Take, Order, Group, Count, Explore]
+@dataclass(frozen=True)
+class Objective:
+    direction: str  # "maximize" | "minimize"
+    measure: str  # "sum"
+    scope: str  # "contiguous"
+    source: str
+
+
+Step = Union[Take, Order, Group, Count, Explore, Objective]
 
 
 @dataclass(frozen=True)

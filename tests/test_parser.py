@@ -1,4 +1,4 @@
-from rune.model import Count, Explore, Group, Order, Take
+from rune.model import Count, Explore, Group, Objective, Order, Take
 from rune.parser import parse_program
 
 
@@ -62,3 +62,19 @@ def test_parses_explore_from_to_line():
     graph = parse_program("EXPLORE graph FROM a TO b")
 
     assert graph.steps == [Explore(source="graph", start="a", target="b")]
+
+
+def test_parses_maximize_sum_over_contiguous():
+    graph = parse_program("MAXIMIZE SUM OVER CONTIGUOUS nums")
+
+    assert graph.steps == [
+        Objective(direction="maximize", measure="sum", scope="contiguous", source="nums")
+    ]
+
+
+def test_parses_minimize_variant():
+    graph = parse_program("MINIMIZE SUM OVER CONTIGUOUS nums")
+
+    assert graph.steps == [
+        Objective(direction="minimize", measure="sum", scope="contiguous", source="nums")
+    ]

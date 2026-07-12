@@ -1,5 +1,5 @@
 from rune.lexer import tokenize_program
-from rune.model import Count, Explore, Group, Order, Take, TransformationGraph
+from rune.model import Count, Explore, Group, Objective, Order, Take, TransformationGraph
 
 
 def _parse_line(tokens):
@@ -21,6 +21,14 @@ def _parse_line(tokens):
         # tokens: EXPLORE <source> FROM <start> [TO <target>]
         target = tokens[5].value if len(tokens) > 4 else None
         return Explore(source=tokens[1].value, start=tokens[3].value, target=target)
+    if head.value in ("MAXIMIZE", "MINIMIZE"):
+        # tokens: MAXIMIZE|MINIMIZE <measure> OVER <scope> <source>
+        return Objective(
+            direction=head.value.lower(),
+            measure=tokens[1].value.lower(),
+            scope=tokens[3].value.lower(),
+            source=tokens[4].value,
+        )
     raise ValueError(f"unrecognized step starting with {head.value!r}")
 
 
