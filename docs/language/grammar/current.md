@@ -4,10 +4,10 @@ This documents exactly what `rune/parser.py` accepts today. It is kept in
 sync with the parser deliberately — if this file and the parser disagree,
 the parser is the ground truth and this file is stale.
 
-**Status: frozen, with one promotion since v0.1** (`EXPLORE`/Traversal — see
-`docs/language/V0.1_FREEZE.md`). No further new keywords until
-`docs/language/atlas/algorithm-atlas.md` produces enough independent
-evidence to promote another candidate concept from
+**Status: frozen, with two promotions since v0.1** (`EXPLORE`/Traversal, and
+`MAXIMIZE`/`MINIMIZE`/Objective — see `docs/language/V0.1_FREEZE.md`). No
+further new keywords until `docs/language/atlas/algorithm-atlas.md` produces
+enough independent evidence to promote another candidate concept from
 `docs/language/primitives/candidates/`.
 
 ## Program structure
@@ -25,6 +25,7 @@ no semicolons, no nested expressions.
 | Ordering | `ORDER BY <key> [ASC\|DESC]` — defaults to ASC if omitted |
 | Selection | `TAKE <count>` |
 | Traversal | `EXPLORE <source> FROM <start> [TO <target>]` — `TO` optional; without it, returns reachability/distances from `start`, with it, returns the shortest distance to `target` (or nothing if unreachable). BFS or Dijkstra is chosen at runtime from the data, not the syntax — see `rune/runner.py`'s `_select_shortest_path_strategy`. |
+| Objective | `MAXIMIZE\|MINIMIZE SUM OVER CONTIGUOUS <source>` — the best (max/min) sum over contiguous subarrays. The compiler recognizes this objective and emits Kadane's O(n) pass instead of checking all O(n²) subarrays — see the optimizer. Scope is limited to `CONTIGUOUS` on purpose; only *structural* scopes close in Rune's vocabulary (see `docs/language/decisions/DECISIONS.md`, the closed-vocabulary ceiling). |
 
 This file documents spelling. `docs/language/philosophy/style-laws.md` (the
 concept-vs-syntax note) documents why the two columns are kept separate.
@@ -33,7 +34,7 @@ concept-vs-syntax note) documents why the two columns are kept separate.
 
 - Tokens are whitespace-separated words per line.
 - A closed keyword set: `GROUP, BY, COUNT, EACH, ORDER, ASC, DESC, TAKE,
-  EXPLORE, FROM, TO`.
+  EXPLORE, FROM, TO, MAXIMIZE, MINIMIZE, SUM, OVER, CONTIGUOUS`.
 - Anything not a keyword and not all-digits is an `IDENT`.
 - All-digit words are `NUMBER`.
 

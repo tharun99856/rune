@@ -1,15 +1,19 @@
 # Candidate: objective over a scope (naming undecided — NOT "MAXIMIZE"/"DP")
 
-**Status (updated 2026-07-09, after the whole-ledger scope-closure sweep —
-`docs/language/research/2026-07-09-objectives-scope-closure.md`):** SPLIT.
-Objectives do not close uniformly. The concept bifurcates by *scope type*,
-and only one half is a viable Rune concept:
+**Status (updated 2026-07-09): PARTIALLY PROMOTED.** The whole-ledger
+scope-closure sweep
+(`docs/language/research/2026-07-09-objectives-scope-closure.md`) split this
+into a viable structural half and an out-of-reach predicate half. The
+structural half's first scope — **contiguous subarrays** — has now been
+promoted: `MAXIMIZE|MINIMIZE SUM OVER CONTIGUOUS` is in the grammar, carrying
+the Kadane O(n) vs naive O(n²) proof (see `docs/language/primitives/OBJECTIVE.md`).
 
-- **Objective over a STRUCTURAL scope** (~10 problems: max sum over contiguous
-  subarrays, max area over pairs, max over windows, select by rank, max tree
-  path). Scope is a nameable shape, no predicate needed → **viable, narrow
-  candidate.** Payoff: one strong new optimizer proof (Kadane O(n) vs naive
-  all-subarrays O(n²)). Several rank cases already near-`ORDER`+`TAKE`.
+This candidate stays open for the *rest* of the structural half:
+
+- **Structural scope, still candidate** — `OVER PAIRS` (Container With Most
+  Water, Max Product of Three), `OVER WINDOWS` (overlaps `windowed-view.md`),
+  rank-based (largely already `ORDER`+`TAKE`). Each a separate future
+  promotion when evidence warrants.
 - **Objective over a PREDICATE-defined scope** (~12–14 problems: Coin Change,
   LIS, LCS, Edit Distance, Word Break, Partition, palindrome/no-repeat
   substrings, House Robber). Scope needs an arbitrary constraint predicate

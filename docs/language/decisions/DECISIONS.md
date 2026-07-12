@@ -303,3 +303,64 @@ precisely which problems it can and cannot express, and why.)
 
 **Trade-offs:** Deflates the "objectives" excitement — the motivating DP
 problems are the ones out of reach. Better known now.
+
+---
+
+## Identity fixed: Rune stays closed & provable (not "every DSA problem")
+
+**Category:** Architecture (identity)
+**Status:** Accepted — the user's explicit call
+**Revisit:** Permanent, short of the user reversing it. This is the founding
+bet; reversing it is a different project.
+**Maintenance Cost:** Low — it's a boundary that *prevents* work (arbitrary
+predicates), not one that adds any.
+
+**Decision:** When the ambition "an exclusive DSA language where every hard
+question can be solved" collided with the closed-vocabulary finding, the user
+chose to keep Rune **closed and provable**: it expresses the closeable slice
+of DSA and its superpower is that the compiler picks the algorithm from intent
+*and proves it*. It explicitly does NOT aim to solve every DSA problem —
+predicate-scoped DP is out (the ceiling), and that's accepted.
+
+**Reason:** The two goals are mutually exclusive, and not by an engineering
+limit but by Rice's theorem. "Solve every hard problem" requires arbitrary
+user predicates; the moment those exist, the optimizer can't know what a
+program does, and "the compiler chooses and proves the algorithm" — the entire
+novel contribution, the reason to open-source it — stops being possible. A
+language that does everything already exists (Python) and Rune would lose to
+it. A language that provably chooses your algorithm from intent exists nowhere.
+Narrow-but-novel beats broad-but-redundant.
+
+**Trade-offs:** Rune will never be a general DSA solver, and that has to be
+said plainly rather than implied away — "solve Striver's sheet in Rune" is not
+a reachable goal for the DP-heavy portion. In exchange it keeps the one
+property that makes it worth existing.
+
+---
+
+## Objective (`MAXIMIZE`/`MINIMIZE`) promoted — structural scope only
+
+**Category:** Architecture (language)
+**Status:** Accepted — the user's explicit call (delegated: "choose the best one")
+**Revisit:** When evidence warrants another *structural* scope (`OVER PAIRS`,
+`OVER WINDOWS`). Never for predicate scopes — that's the ceiling.
+**Maintenance Cost:** Medium — a new plan node (KadaneScan), a naive baseline,
+and an optimizer rule, all with the naive/optimized equivalence to maintain.
+
+**Decision:** Promote `MAXIMIZE|MINIMIZE SUM OVER CONTIGUOUS` as the sixth
+concept — the closeable first scope of the objective candidate. Sole measure
+`SUM`, sole scope `CONTIGUOUS`, on purpose.
+
+**Reason:** It's the concrete embodiment of the closed-and-provable identity:
+a real intent (best sum over contiguous subarrays), a real, provable compiler
+decision (recognize optimal substructure → Kadane O(n) vs naive O(n²)), and
+zero predicate hatch. It's the third distinct optimizer proof and the first
+DP-flavored one — evidence the "compiler picks the algorithm" thesis
+generalizes past collections and graphs into optimization, at least for
+structural scopes. ~1090x at n=4000, identical result, checked against the
+naive baseline on 200 random arrays.
+
+**Trade-offs:** Narrow (one measure, one scope). That narrowness is the point —
+it's exactly the closeable boundary, not an MVP shortcut. Extending to other
+*structural* scopes is future promotion work; extending to predicate scopes is
+forbidden by the ceiling entry above.
