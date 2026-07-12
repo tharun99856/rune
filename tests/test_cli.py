@@ -54,3 +54,12 @@ def test_proofs_command_shows_all_three_and_returns_zero(capsys):
     assert "Dijkstra" in captured.out
     assert "KADANE" in captured.out or "Kadane" in captured.out
     assert "MISMATCH" not in captured.out
+
+
+def test_verify_command_shows_verified_and_rejected(capsys):
+    exit_code = main(["verify"])
+
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "VERIFIED" in captured.out
+    assert "REJECTED" in captured.out

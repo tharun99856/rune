@@ -86,7 +86,13 @@ def main(argv=None):
         print(format_proofs_report())
         return 0
 
-    print("usage: python -m rune.cli [stats|mine|demo|complexity|explain|proofs]")
+    if argv and argv[0] == "verify":
+        from rune.verify import format_verification_demo
+
+        print(format_verification_demo())
+        return 0
+
+    print("usage: python -m rune.cli [stats|mine|demo|complexity|explain|proofs|verify]")
     return 1
 
 

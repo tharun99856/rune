@@ -47,7 +47,35 @@ Every line is produced by the real optimizer and self-checked against the
 naive baseline before printing — a `MISMATCH` shows instead of a
 plausible-looking wrong number if anything ever disagrees. At scale the
 Kadane rewrite is ~1090x (O(n²)→O(n)); `python -m rune.cli complexity` shows
-real measured time and space.
+real measured time and space. All three plans also compile to **native C++**
+(`rune/backends/cpp_backend.py`, via a pip-installed `zig` toolchain — no
+system compiler needed), each verified equal to the interpreter.
+
+## AI proposes, Rune proves
+
+This is where the closed-and-provable design pays off. An LLM can emit a Rune
+program — confidently, and sometimes wrong. Rune is the deterministic source
+of truth that certifies it or rejects it with a precise reason, no model
+involved (`python -m rune.cli verify`):
+
+```
+[VERIFIED] a correct proposal
+   proposed: MAXIMIZE SUM OVER CONTIGUOUS nums
+   result:   6
+   chose:    KADANE(maximize) -- O(n) single pass
+
+[REJECTED] a hallucinated proposal (keyword that doesn't exist)
+   rejected at [parse]: unrecognized step starting with 'FILTER'
+
+[REJECTED] a plausible proposal with a WRONG claimed answer
+   rejected at [expected]: produced 6, expected 99
+```
+
+An LLM wrapper *generates* code and hopes. Rune *proves* it — catches
+hallucinated syntax and wrong claimed outputs deterministically. The AI is
+just a proposer; the compiler is the judge. (The English→Rune LLM front-end is
+a thin layer you add with your own API key; the verification engine here needs
+neither.)
 
 ## What Rune deliberately is NOT
 
