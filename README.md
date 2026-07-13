@@ -1,6 +1,12 @@
-# Rune
+<p align="center">
+  <a href="https://tharun99856.github.io/rune/">
+    <img src="assets/og.png" alt="Rune — the compiler chooses your algorithm, and proves it" width="720">
+  </a>
+</p>
 
-[![tests](https://github.com/tharun99856/rune/actions/workflows/ci.yml/badge.svg)](https://github.com/tharun99856/rune/actions/workflows/ci.yml)
+<p align="center">
+  <a href="https://github.com/tharun99856/rune/actions/workflows/ci.yml"><img src="https://github.com/tharun99856/rune/actions/workflows/ci.yml/badge.svg" alt="tests"></a>
+</p>
 
 **▶ Try it in your browser: https://tharun99856.github.io/rune/** — the real
 optimizer, running as Python via Pyodide, no install.
