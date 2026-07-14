@@ -240,6 +240,27 @@ point only.
 
 ---
 
+## 018 Sort Characters by Frequency
+
+**Human Solution:** Count how many times each character appears, then list the
+characters from most frequent to least.
+
+**Current Language:** ✅ `GROUP text BY value / COUNT EACH char / ORDER BY count DESC`
+— [verified] parses through `rune.parser.parse_program` and [verified] runs
+through `run_program` (e.g. `mississippi` → i:4, s:4, p:2, m:1). It is exactly
+#001's shape minus the final `TAKE`.
+
+**Design Decision:** None needed. No new concept — this is a third independent
+confirmation (with #001, #004) that Grouping + Aggregation + Ordering is a
+load-bearing, already-closed pattern. Running it *did* surface an interpreter
+bug — the descending tiebreak negated the sort key, assuming numbers, and
+crashed on character keys — but that was an implementation defect (fixed in
+`rune/runner.py`, regression-tested), not a grammar gap. Materializing the
+answer back into a repeated-character string is presentation/serialization,
+deliberately outside the pipeline (same boundary #001 draws).
+
+---
+
 # Grammar Pressure
 
 This is signal, not a queue of approved keywords. A high count means a

@@ -1,0 +1,3 @@
+GROUP text BY value
+COUNT EACH char
+ORDER BY count DESC
