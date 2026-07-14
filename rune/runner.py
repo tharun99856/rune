@@ -1,3 +1,4 @@
+import functools
 import heapq
 from collections import deque
 from dataclasses import dataclass
@@ -125,10 +126,33 @@ def _tiebreak(item):
     return getattr(item, "key", item)
 
 
-def _sort_key(step):
-    if step.descending:
-        return lambda item: (_extract(item, step.key), -_tiebreak(item))
-    return lambda item: (_extract(item, step.key), _tiebreak(item))
+@functools.total_ordering
+class _AscTiebreak:
+    # Wraps a tiebreak value so a heap that keeps the "largest" element still
+    # resolves ties toward the SMALLEST tiebreak -- the same ascending-tiebreak
+    # convention _ordered() uses, but reached by inverting the comparison
+    # instead of arithmetic negation, so it works for any orderable key
+    # (characters, strings), not just numbers that can be negated.
+    __slots__ = ("value",)
+
+    def __init__(self, value):
+        self.value = value
+
+    def __eq__(self, other):
+        return self.value == other.value
+
+    def __lt__(self, other):
+        return other.value < self.value
+
+
+def _ordered(current, key, descending):
+    # Stable two-stage sort: order by the deterministic tiebreak ascending,
+    # then by the primary key in the requested direction. Python's sort is
+    # stable, so equal primary keys keep their ascending-tiebreak order in
+    # both directions -- and nothing is negated, so non-numeric keys sort as
+    # cleanly as numbers do.
+    by_tiebreak = sorted(current, key=_tiebreak)
+    return sorted(by_tiebreak, key=lambda item: _extract(item, key), reverse=descending)
 
 
 def run_step(step, current):
@@ -145,12 +169,21 @@ def run_step(step, current):
     if isinstance(step, Count):
         return [CountedBucket(key=b.key, count=len(b.items)) for b in current]
     if isinstance(step, Order):
-        return sorted(current, key=_sort_key(step), reverse=step.descending)
+        return _ordered(current, step.key, step.descending)
     if isinstance(step, Take):
         return current[: step.count]
     if isinstance(step, TopK):
-        selector = heapq.nlargest if step.descending else heapq.nsmallest
-        return selector(step.count, current, key=_sort_key(step))
+        if step.descending:
+            return heapq.nlargest(
+                step.count,
+                current,
+                key=lambda item: (_extract(item, step.key), _AscTiebreak(_tiebreak(item))),
+            )
+        return heapq.nsmallest(
+            step.count,
+            current,
+            key=lambda item: (_extract(item, step.key), _tiebreak(item)),
+        )
     if isinstance(step, Explore):
         algorithm, _explanation = _select_shortest_path_strategy(current)
         distances = algorithm(current, step.start)

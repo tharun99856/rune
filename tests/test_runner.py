@@ -107,6 +107,39 @@ def test_top_k_breaks_ties_the_same_way_as_order_does():
     assert [b.key for b in result] == [40, 10]
 
 
+def test_order_descending_over_string_keys_does_not_crash():
+    # Regression: descending ORDER over buckets whose key is non-numeric (a
+    # character, from GROUP text BY value / COUNT EACH char) must not crash.
+    # The primary sorts by count descending; ties break by ascending key --
+    # the same convention as numeric keys, just without assuming the key can
+    # be arithmetically negated.
+    buckets = [
+        CountedBucket(key="t", count=1),
+        CountedBucket(key="e", count=2),
+        CountedBucket(key="r", count=1),
+    ]
+    step = Order(key="count", descending=True)
+
+    result = run_step(step, buckets)
+
+    assert [b.key for b in result] == ["e", "r", "t"]
+
+
+def test_top_k_over_string_keys_breaks_ties_like_order():
+    # The optimized TOP_K path must handle string keys identically to ORDER,
+    # so switching on the optimizer can't change results for non-numeric keys.
+    buckets = [
+        CountedBucket(key="t", count=1),
+        CountedBucket(key="e", count=2),
+        CountedBucket(key="r", count=1),
+    ]
+    step = TopK(key="count", descending=True, count=2)
+
+    result = run_step(step, buckets)
+
+    assert [b.key for b in result] == ["e", "r"]
+
+
 def test_top_k_step_selects_highest_by_key_without_full_sort():
     buckets = [
         CountedBucket(key=1, count=3),
