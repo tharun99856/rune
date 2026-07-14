@@ -49,6 +49,37 @@ def test_order_without_a_following_take_is_not_rewritten():
     assert explanations == []
 
 
+def test_consecutive_takes_coalesce_to_the_tightest_bound():
+    # TAKE a then TAKE b keeps the first b of the first a rows -- i.e. the
+    # first min(a, b). One bound does the job of two.
+    steps = [Take(count=10), Take(count=3)]
+
+    new_steps, explanations = optimize(steps)
+
+    assert new_steps == [Take(count=3)]
+    assert len(explanations) == 1
+    assert explanations[0].rule == "COALESCE_TAKES"
+
+
+def test_take_coalescing_composes_with_top_k_to_size_the_heap_tighter():
+    # ORDER / TAKE 10 / TAKE 3: the redundant TAKE folds away first, so the
+    # heap is sized to 3, not 10 -- the two rewrites compose.
+    steps = [Order(key="count", descending=True), Take(count=10), Take(count=3)]
+
+    new_steps, _ = optimize(steps)
+
+    assert new_steps == [TopK(key="count", descending=True, count=3)]
+
+
+def test_single_take_is_not_a_coalesce_and_produces_no_explanation():
+    steps = [Take(count=5)]
+
+    new_steps, explanations = optimize(steps)
+
+    assert new_steps == [Take(count=5)]
+    assert explanations == []
+
+
 def test_maximize_sum_contiguous_rewrites_to_kadane_with_explanation():
     steps = [Objective(direction="maximize", measure="sum", scope="contiguous", source="nums")]
 
