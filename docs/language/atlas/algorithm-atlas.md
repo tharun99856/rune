@@ -14,9 +14,11 @@ rules — and to resist inventing keywords just because a problem failed.
 4. Only then: does this need a genuinely new primitive — and even so, the
    *capability* is established before any keyword/spelling is chosen.
 
-Grammar is still frozen: `GROUP...BY`, `COUNT EACH`, `ORDER BY...[ASC|DESC]`,
-`TAKE`. Nothing else exists in the parser. "Design Decision" below is always
-an open question, never a conclusion.
+Grammar is still frozen — `docs/language/grammar/current.md` documents exactly
+what the parser accepts, and the parser, not this file, is ground truth. Two
+concepts have been promoted since v0.1 on the evidence below: Traversal
+(`EXPLORE`) and Objective (`MAXIMIZE`/`MINIMIZE`). "Design Decision" below is
+always an open question, never a conclusion.
 
 ---
 
