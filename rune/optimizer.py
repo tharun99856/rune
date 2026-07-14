@@ -23,9 +23,37 @@ class RewriteExplanation:
     reason: str
 
 
-def optimize(steps):
-    new_steps = []
+def _coalesce_takes(steps):
+    # Fold back-to-back TAKEs into a single tightest bound. TAKE a then TAKE b
+    # is the first b of the first a rows -- the first min(a, b) either way --
+    # so one bound replaces two, and it runs before the ORDER+TAKE fusion so
+    # the resulting heap is sized to the tighter bound.
+    out = []
     explanations = []
+    for step in steps:
+        if isinstance(step, Take) and out and isinstance(out[-1], Take):
+            prev = out[-1]
+            tighter = min(prev.count, step.count)
+            out[-1] = Take(count=tighter)
+            explanations.append(
+                RewriteExplanation(
+                    rule="COALESCE_TAKES",
+                    before=f"TAKE {prev.count} + TAKE {step.count}",
+                    after=f"TAKE {tighter}",
+                    reason=(
+                        "Consecutive TAKEs each only bound the length; keeping just the "
+                        "smaller bound yields the same rows without the redundant pass."
+                    ),
+                )
+            )
+        else:
+            out.append(step)
+    return out, explanations
+
+
+def optimize(steps):
+    steps, explanations = _coalesce_takes(steps)
+    new_steps = []
     i = 0
     while i < len(steps):
         step = steps[i]
