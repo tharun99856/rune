@@ -49,8 +49,84 @@ def _format_mine_report(rows):
     return "\n".join(lines)
 
 
+_RUN_USAGE = 'usage: python -m rune.cli run <program.rn> --data <data.json> [--explain]'
+
+
+def _format_run_result(result):
+    from rune.runner import CountedBucket, GroupedBucket
+
+    if isinstance(result, list):
+        lines = []
+        for item in result:
+            if isinstance(item, CountedBucket):
+                lines.append(f"{item.key}: {item.count}")
+            elif isinstance(item, GroupedBucket):
+                lines.append(f"{item.key}: {' '.join(str(x) for x in item.items)}")
+            else:
+                lines.append(str(item))
+        return "\n".join(lines)
+    if isinstance(result, dict):
+        return "\n".join(f"{k}: {v}" for k, v in result.items())
+    return str(result)
+
+
+def _run_command(args):
+    import json
+    from pathlib import Path
+
+    explain = "--explain" in args
+    args = [a for a in args if a != "--explain"]
+    if len(args) != 3 or args[1] != "--data":
+        print(_RUN_USAGE)
+        return 1
+
+    from rune.optimizer import optimize
+    from rune.parser import parse_program
+    from rune.runner import run_program
+
+    program_path, data_path = Path(args[0]), Path(args[2])
+    if not program_path.exists():
+        print(f"program file not found: {program_path}")
+        return 1
+    if not data_path.exists():
+        print(f"data file not found: {data_path}")
+        return 1
+
+    try:
+        graph = parse_program(program_path.read_text())
+    except ValueError as e:
+        print(f"parse error: {e}")
+        return 1
+
+    try:
+        data = json.loads(data_path.read_text())
+    except json.JSONDecodeError as e:
+        print(f"data file is not valid JSON: {e}")
+        return 1
+    if isinstance(data, dict):
+        # JSON has no tuples; adjacency lists arrive as [[neighbor, weight], ...]
+        data = {node: [tuple(edge) for edge in edges] for node, edges in data.items()}
+
+    steps, explanations = optimize(graph.steps)
+    if explain:
+        for exp in explanations:
+            print(f"Rewrote: {exp.before}  ->  {exp.after}")
+
+    try:
+        result = run_program(steps, data)
+    except ValueError as e:
+        print(f"runtime error: {e}")
+        return 1
+
+    print(_format_run_result(result))
+    return 0
+
+
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
+
+    if argv and argv[0] == "run":
+        return _run_command(argv[1:])
 
     if argv and argv[0] == "stats":
         rows = load_ledger()
@@ -121,7 +197,7 @@ def main(argv=None):
             print(f"    compiler would choose: {c.split('  (')[0]}")
         return 0
 
-    print("usage: python -m rune.cli [stats|mine|demo|complexity|explain|proofs|verify|ai]")
+    print("usage: python -m rune.cli [run|stats|mine|demo|complexity|explain|proofs|verify|ai]")
     return 1
 
 
