@@ -1,3 +1,5 @@
+import pytest
+
 from rune.model import Count, Explore, Group, Objective, Order, Take
 from rune.parser import parse_program
 
@@ -78,3 +80,38 @@ def test_parses_minimize_variant():
     assert graph.steps == [
         Objective(direction="minimize", measure="sum", scope="contiguous", source="nums")
     ]
+
+
+def test_unrecognized_step_names_the_line_and_the_word():
+    with pytest.raises(ValueError) as exc:
+        parse_program("GROUP nums BY value\nFILTER x")
+
+    message = str(exc.value)
+    assert "line 2" in message
+    assert "FILTER" in message
+    assert "GROUP" in message  # tells you what a step CAN start with
+
+
+def test_incomplete_step_names_the_line_and_expected_form():
+    with pytest.raises(ValueError) as exc:
+        parse_program("TAKE")
+
+    message = str(exc.value)
+    assert "line 1" in message
+    assert "TAKE <count>" in message
+
+
+def test_non_numeric_take_count_gets_the_expected_form():
+    with pytest.raises(ValueError) as exc:
+        parse_program("TAKE many")
+
+    message = str(exc.value)
+    assert "line 1" in message
+    assert "TAKE <count>" in message
+
+
+def test_blank_lines_do_not_shift_reported_line_numbers():
+    with pytest.raises(ValueError) as exc:
+        parse_program("\nGROUP nums BY value\n\nBOGUS x")
+
+    assert "line 4" in str(exc.value)
