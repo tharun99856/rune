@@ -8,6 +8,10 @@
   <a href="https://github.com/tharun99856/rune/actions/workflows/ci.yml"><img src="https://github.com/tharun99856/rune/actions/workflows/ci.yml/badge.svg" alt="tests"></a>
 </p>
 
+> I first started building Rune to learn DSA the way it should be learned —
+> through the logic of the algorithm, not the boilerplate of writing it.
+> It grew from there.
+
 **▶ Try it in your browser: https://tharun99856.github.io/rune/** — the real
 optimizer, running as Python via Pyodide, no install.
 
