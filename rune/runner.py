@@ -38,6 +38,45 @@ def _is_weighted(graph):
     return any(weight != 1 for edges in graph.values() for _neighbor, weight in edges)
 
 
+def _has_negative_edge(graph):
+    return any(weight < 0 for edges in graph.values() for _neighbor, weight in edges)
+
+
+def _bellman_ford(graph, start):
+    nodes = set(graph)
+    for edges in graph.values():
+        for neighbor, _weight in edges:
+            nodes.add(neighbor)
+    distances = {start: 0}
+    for _ in range(max(len(nodes) - 1, 0)):
+        changed = False
+        for node, edges in graph.items():
+            base = distances.get(node)
+            if base is None:
+                continue
+            for neighbor, weight in edges:
+                candidate = base + weight
+                if candidate < distances.get(neighbor, float("inf")):
+                    distances[neighbor] = candidate
+                    changed = True
+        if not changed:
+            break
+    # After V-1 rounds every shortest path is settled -- unless a further
+    # relaxation still improves something, which can only mean a reachable
+    # negative cycle, where "shortest" is undefined. Report it; never loop.
+    for node, edges in graph.items():
+        base = distances.get(node)
+        if base is None:
+            continue
+        for neighbor, weight in edges:
+            if base + weight < distances.get(neighbor, float("inf")):
+                raise ValueError(
+                    f"graph contains a negative cycle reachable from {start!r}; "
+                    "shortest distances are undefined"
+                )
+    return distances
+
+
 def _better(candidate, best, direction):
     if best is None:
         return True
@@ -72,6 +111,19 @@ class StrategyExplanation:
 
 
 def _select_shortest_path_strategy(graph):
+    if _has_negative_edge(graph):
+        return _bellman_ford, StrategyExplanation(
+            rule="EXPLORE_STRATEGY_SELECTION",
+            strategy="Bellman-Ford",
+            reason=(
+                "Graph has negative-weight edges; Dijkstra's greedy settling "
+                "assumes a later edge can never shorten a finished path, which "
+                "negative weights break. Bellman-Ford's V-1 relaxation rounds "
+                "handle them -- and if a further round still improves a "
+                "distance, that's a negative cycle, reported as an error "
+                "instead of looping forever."
+            ),
+        )
     if _is_weighted(graph):
         return _dijkstra, StrategyExplanation(
             rule="EXPLORE_STRATEGY_SELECTION",
