@@ -1,3 +1,5 @@
+import pytest
+
 from rune.model import Count, Explore, Group, Objective, Order, Take
 from rune.optimizer import TopK
 from rune.runner import (
@@ -222,6 +224,30 @@ def test_explore_picks_dijkstra_and_explains_why_for_weighted_graphs():
 
     assert result == {"a": 0, "c": 1, "b": 2, "d": 3}
     assert explanation.strategy == "Dijkstra"
+
+
+def test_explore_picks_bellman_ford_and_explains_why_for_negative_edges():
+    # Dijkstra's greedy finalization assumes an edge never shortens an
+    # already-settled path; a negative edge breaks that assumption, so the
+    # selector must fall back to Bellman-Ford's relaxation rounds.
+    graph = {"a": [("b", 2), ("c", 5)], "c": [("b", -4)], "b": []}
+
+    result, explanation = explore_with_explanation(
+        Explore(source="graph", start="a", target=None), graph
+    )
+
+    assert explanation.strategy == "Bellman-Ford"
+    assert result == {"a": 0, "b": 1, "c": 5}
+
+
+def test_explore_negative_cycle_raises_instead_of_hanging():
+    # a -> b (1), b -> a (-2): every trip around the loop lowers the total,
+    # so "shortest distance" is undefined. The runner must say so, not spin
+    # forever re-relaxing the cycle.
+    graph = {"a": [("b", 1)], "b": [("a", -2)]}
+
+    with pytest.raises(ValueError, match="negative cycle"):
+        run_step(Explore(source="graph", start="a", target="b"), graph)
 
 
 def test_run_step_uses_dijkstra_automatically_for_weighted_graphs():
