@@ -27,6 +27,36 @@ ORDER BY count DESC
 TAKE 10
 ```
 
+## Run it locally
+
+Save a program and some JSON data, then run one against the other:
+
+```
+# topk.rn
+GROUP nums BY value
+COUNT EACH group
+ORDER BY count DESC
+TAKE 2
+
+# data.json
+[1, 1, 1, 2, 2, 3, 4, 4, 4, 4]
+```
+
+```
+$ python -m rune.cli run topk.rn --data data.json
+4: 4
+1: 3
+
+$ python -m rune.cli run topk.rn --data data.json --explain
+Rewrote: ORDER BY count DESC + TAKE 2  ->  TOP_K(count, 2)
+4: 4
+1: 3
+```
+
+Graphs are JSON objects (`{"a": [["b", 1]], ...}`); `EXPLORE` picks BFS,
+Dijkstra, or Bellman-Ford from the data it finds. What each step consumes and
+produces is specified in `docs/language/DATA_MODEL.md`.
+
 ## The one thing that makes Rune Rune
 
 It makes three *structurally different kinds* of optimization decision across
@@ -76,7 +106,9 @@ involved (`python -m rune.cli verify`):
    chose:    KADANE(maximize) -- O(n) single pass
 
 [REJECTED] a hallucinated proposal (keyword that doesn't exist)
-   rejected at [parse]: unrecognized step starting with 'FILTER'
+   rejected at [parse]: does not parse: line 1: unrecognized step 'FILTER'
+   -- every step starts with one of COUNT, EXPLORE, GROUP, MAXIMIZE,
+   MINIMIZE, ORDER, TAKE
 
 [REJECTED] a plausible proposal with a WRONG claimed answer
    rejected at [expected]: produced 6, expected 99
@@ -109,7 +141,7 @@ native C++** — the optimized plan is generated as C++, compiled with a real
 clang toolchain (`zig`, no system compiler needed), run, and verified equal to
 the reference interpreter. Backends sit behind a common interface (Python
 interpreter, LLVM-JIT via Numba, native C++). Measured ~5x native over
-interpreted on Kadane at 5M elements, same answer. ~87 tests, including ones
+interpreted on Kadane at 5M elements, same answer. 115 tests, including ones
 that compile and run real C++ on every run. See `docs/language/V0.1_FREEZE.md`
 for how the vocabulary was frozen and what got promoted since.
 
