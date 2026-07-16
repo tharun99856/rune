@@ -242,7 +242,31 @@ point only.
 
 ---
 
-## 018 Sort Characters by Frequency
+## 047 Daily Temperatures
+
+**Human Solution:** For each day, how many days until a warmer temperature.
+
+**Current Language:** ❌ — no plausible attempt exists. The answer is
+per-element (a span for every position), computed from a positional relation
+("the nearest *later* element greater than this one"). GROUP discards
+sequence, ORDER re-sorts it away, TAKE only bounds length, EXPLORE consumes
+graphs, objectives return one scalar — nothing to run without inventing a
+strawman.
+
+**Design Decision:** ❓ Open — second data point for the *relation* candidate
+(`primitives/candidates/relation-or-computed-group-key.md`), where the
+Stateful Scan dissolution already re-filed this problem's intent
+(next-greater/span relation — closer to Two Sum than to Valid Parentheses).
+It also stresses the candidate's hypothesis 2 (computed GROUP key): Two Sum
+relates *values*, but next-greater relates *positions with a direction* —
+early evidence the two hypotheses may not be interchangeable.
+
+**Status:** Deferred — tracked on the relation candidate. See
+`research/2026-07-16-daily-temperatures.md`.
+
+---
+
+## 101 Sort Characters by Frequency
 
 **Human Solution:** Count how many times each character appears, then list the
 characters from most frequent to least.

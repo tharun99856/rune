@@ -60,7 +60,9 @@ buckets rather than a reconstructed structure. Drawing that line is a decision
 ## Decision
 
 No grammar change. Added `docs/language/examples/strings/sort-characters-by-frequency.rn`
-(kept parsing green by `tests/test_examples.py`), atlas entry #018, and fixed
+(kept parsing green by `tests/test_examples.py`), atlas entry #101 (ledger
+row 101; originally misnumbered #018, which collided with Valid Parentheses's
+ledger id — corrected 2026-07-16), and fixed
 the descending-tiebreak runtime bug this problem exposed.
 
 ## Outcome
@@ -69,8 +71,12 @@ the descending-tiebreak runtime bug this problem exposed.
 
 ## Next experiment
 
-Unchanged from 2026-07-07: the still-open lead is a second stack-shaped problem
-(Daily Temperatures or Largest Rectangle in Histogram) to test whether "stack
-state" recurs independently — the evidence the `stateful-scan-or-recurrence`
-over-aggregation question actually needs. This entry deliberately does not touch
-that; it only confirms existing reach.
+~~Unchanged from 2026-07-07: a second stack-shaped problem (Daily Temperatures
+or Largest Rectangle) to test whether "stack state" recurs independently.~~
+
+**Corrected 2026-07-16:** the pointer above was stale when written — the
+stateful-scan over-aggregation question was already closed by the 2026-07-09
+dissolution (stack is a mechanism, not an intent; not a Rune concept). The
+live leads are the ones the same-day pressure review names: Relation and
+Window (tied at 10), plus one more Enumeration problem. Daily Temperatures
+was journaled 2026-07-16 as *Relation* evidence accordingly.
