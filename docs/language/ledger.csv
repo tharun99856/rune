@@ -99,3 +99,4 @@ id,problem,category,outcome,concept,batch
 098,LRU Cache,Design,GAP,ADT Definition,3
 099,Min Cost Climbing Stairs,DP,GAP,Stateful Scan,3
 100,Number of Provinces,Graphs,GAP,Traversal,3
+101,Sort Characters by Frequency,Strings,WORKS,Grouping;Aggregation;Ordering,4
