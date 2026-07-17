@@ -132,3 +132,17 @@ def test_cpp_explore_matches_interpreter_dijkstra_on_weighted():
     cpp = CppBackend().run([step], _WEIGHTED)
     interp = run_step(step, _WEIGHTED)
     assert cpp == interp == {"a": 0, "c": 1, "b": 2, "d": 3}
+
+
+def test_cpp_backend_refuses_negative_weight_graphs_before_compiling():
+    # The generated C++ only knows BFS and Dijkstra; the interpreter selects
+    # Bellman-Ford for negative edges. Running Dijkstra here would silently
+    # diverge from the interpreter -- the backend must refuse loudly instead.
+    # No zig marker: the refusal happens before any compilation.
+    import pytest
+    from rune.model import Explore
+
+    negative = {"a": [("b", 2), ("c", 5)], "c": [("b", -4)], "b": []}
+
+    with pytest.raises(ValueError, match="negative"):
+        CppBackend().run([Explore(source="graph", start="a", target=None)], negative)

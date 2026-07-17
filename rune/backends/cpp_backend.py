@@ -16,7 +16,7 @@ from pathlib import Path
 from rune.backend import Backend
 from rune.model import Count, Explore, Group
 from rune.optimizer import KadaneScan, TopK
-from rune.runner import CountedBucket
+from rune.runner import CountedBucket, _has_negative_edge
 
 # --- Kadane: C headers only, so no libc++ (fast, warning-free compile) ------
 _KADANE_TEMPLATE = r"""#include <cstdio>
@@ -204,6 +204,14 @@ class CppBackend(Backend):
         source = emit_cpp(steps)
         node_list = None
         if _is_explore_plan(steps):
+            if _has_negative_edge(data):
+                # The emitted C++ only knows BFS and Dijkstra; the interpreter
+                # selects Bellman-Ford here. Refuse before compiling rather
+                # than silently disagree with the reference backend.
+                raise ValueError(
+                    "negative-weight graphs are not supported by the C++ "
+                    "backend; the interpreter handles them via Bellman-Ford"
+                )
             datafile_content, node_list = _serialize_graph(data, steps[0].start)
         else:
             datafile_content = str(len(data)) + "\n" + " ".join(str(x) for x in data)
