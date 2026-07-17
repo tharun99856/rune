@@ -17,8 +17,17 @@ journaled 2026-07-16).
 2. Extending `GROUP` to accept a *computed* key (e.g. `GROUP nums BY (target - value)`) rather than only a literal field — which might get most of the way there without any new concept at all.
 
 **Why this matters:** hypothesis 2 would mean the language doesn't need a new
-primitive here, just a more expressive existing one. That's a materially
-different, cheaper outcome than hypothesis 1, and shouldn't be skipped past.
+primitive here, just a more expressive existing one.
+
+**Cost correction (2026-07-16, verified against the parser):** hypothesis 2 is
+*not* available today — `GROUP nums BY (target - value)` has no spelling
+inside the frozen vocabulary (the attempt exposed and led to fixing a parser
+silent-tolerance bug; see `research/2026-07-16-two-sum-hypothesis-2.md`). Both
+hypotheses are therefore grammar questions; 2 is the smaller extension, not a
+free lunch. Also recorded there: a mechanical argument that no per-element key
+can express next-greater (a key is a function of the element alone; the
+relation depends on other elements and their positions) — the value/positional
+sub-shape line now has teeth.
 
 **Hypothesis tension (new, 2026-07-16):** Two Sum relates *values* — a
 computed key can plausibly express it. Daily Temperatures relates *positions
