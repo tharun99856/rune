@@ -115,3 +115,31 @@ def test_blank_lines_do_not_shift_reported_line_numbers():
         parse_program("\nGROUP nums BY value\n\nBOGUS x")
 
     assert "line 4" in str(exc.value)
+
+
+def test_trailing_tokens_are_rejected_not_silently_dropped():
+    # 'TAKE 5 please' used to parse as TAKE 5 -- silent tolerance of junk
+    # undermines verification (a hallucinated proposal with trailing tokens
+    # must be REJECTED, not quietly accepted).
+    with pytest.raises(ValueError, match="TAKE <count>"):
+        parse_program("TAKE 5 please")
+    with pytest.raises(ValueError, match="GROUP <source> BY <key>"):
+        parse_program("GROUP nums BY value extra junk")
+
+
+def test_computed_group_key_is_rejected_not_mangled():
+    # Hypothesis 2 spelling from the relation candidate: used to "parse" as
+    # key='(target' with '- value)' silently dropped. Must reject instead.
+    with pytest.raises(ValueError, match="GROUP <source> BY <key>"):
+        parse_program("GROUP nums BY (target - value)")
+
+
+def test_wrong_inner_keywords_are_rejected():
+    with pytest.raises(ValueError):  # BANANA is not ASC|DESC
+        parse_program("ORDER BY count BANANA")
+    with pytest.raises(ValueError):  # X is not TO
+        parse_program("EXPLORE graph FROM a X b")
+    with pytest.raises(ValueError):  # ALL is not EACH
+        parse_program("COUNT ALL group")
+    with pytest.raises(ValueError):  # only SUM is in the grammar today
+        parse_program("MAXIMIZE PRODUCT OVER CONTIGUOUS nums")
