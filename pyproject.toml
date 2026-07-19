@@ -1,3 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rune-lang"
+version = "0.1.0"
+description = "The compiler chooses your algorithm, and proves it -- a closed-vocabulary DSL over collections and graphs."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/tharun99856/rune"
+Playground = "https://tharun99856.github.io/rune/"
+
+[project.optional-dependencies]
+backends = ["numba", "numpy", "ziglang"]
+
+[project.scripts]
+rune = "rune.cli:main"
+
+[tool.setuptools]
+packages = ["rune", "rune.backends"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]

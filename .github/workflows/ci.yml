@@ -15,6 +15,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install package
+        # Installs via pyproject.toml -- catches packaging regressions
+        # (missing [project] metadata, bad package discovery) that running
+        # tests via pythonpath alone would never notice.
+        run: python -m pip install -e .
+
       - name: Install test + backend deps
         run: |
           python -m pip install --upgrade pip
@@ -24,6 +30,9 @@ jobs:
           # numba is best-effort; if a wheel isn't available its backend tests
           # skip cleanly rather than failing the build.
           pip install numba numpy || echo "numba unavailable -> its tests will skip"
+
+      - name: Console script works
+        run: rune demo
 
       - name: Run tests
         run: python -m pytest -q

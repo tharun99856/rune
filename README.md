@@ -33,6 +33,16 @@ TAKE 10
 
 ## Run it locally
 
+```
+git clone https://github.com/tharun99856/rune.git
+cd rune
+pip install -e .
+```
+
+The core language has zero dependencies beyond the standard library. The
+compiled backends (native C++ via zig, LLVM-JIT via Numba) are optional:
+`pip install -e ".[backends]"`.
+
 Save a program and some JSON data, then run one against the other:
 
 ```
@@ -47,11 +57,11 @@ TAKE 2
 ```
 
 ```
-$ python -m rune.cli run topk.rn --data data.json
+$ rune run topk.rn --data data.json
 4: 4
 1: 3
 
-$ python -m rune.cli run topk.rn --data data.json --explain
+$ rune run topk.rn --data data.json --explain
 Rewrote: ORDER BY count DESC + TAKE 2  ->  TOP_K(count, 2)
 4: 4
 1: 3
